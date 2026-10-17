@@ -3,10 +3,13 @@ import Buscardor from './Buscardor';
 import RelojDigital from './RelojDigital';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import {Link } from 'react-router-dom';
+import {FavoritosContext} from '../context/FavoritosContext';
 
 function TopNav() {
     // const usuarioActual = "Juan Perez";
     const { usuario } = useContext(AuthContext);
+    const {favoritos} = useContext(FavoritosContext);
 
     return (
         <header className='topnav'>
@@ -15,7 +18,12 @@ function TopNav() {
                 <Buscardor clase="input-buscar"/>
             </div>
             <div className='perfil-usuario'>
-                <span className='notificaciones'>🔔</span>
+                <Link to= "/mis-favoritos" style= {{textDecoration: 'none',
+                    background: '#f1f5f9', padding: '8px 15px',
+                    borderRadius: '20px', color: '#0f172a', fontWeight: 'bold'
+                }}>
+                    Favoritos: <span style={{color: '#ef4444'}}>{favoritos.length}</span>
+                </Link>
                 {usuario.conectado ? (
                     <>
                         <div className='avatar'>{usuario.nombre.charAt(0)}</div>

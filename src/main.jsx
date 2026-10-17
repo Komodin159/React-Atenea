@@ -5,13 +5,17 @@ import App from './App.jsx'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext.jsx'
+import FavoritosProvider from ''
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <AuthProvider>
+      <FavoritosProvider>
+
       <BrowserRouter>
         <App />
       </BrowserRouter>
+      </FavoritosProvider>
     </AuthProvider>
   </StrictMode>,
 )
