@@ -1,0 +1,217 @@
+.productos-pagina {
+    gap: 22px;
+}
+
+.producto-form-card {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 22px;
+    border: 1px solid var(--slate-200);
+    border-radius: var(--radius-md);
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+}
+
+.form-ayuda {
+    color: var(--slate-400);
+    font-size: 0.76rem;
+    font-weight: 600;
+}
+
+.producto-form {
+    display: grid;
+    grid-template-columns: minmax(180px, 1fr) minmax(140px, 180px) auto;
+    align-items: end;
+    gap: 14px;
+}
+
+.producto-campo {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+}
+
+.producto-campo label {
+    color: var(--slate-700);
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.producto-campo input {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1px solid var(--slate-300);
+    border-radius: 9px;
+    background: var(--white);
+    color: var(--navy-950);
+    font-size: 0.92rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.producto-campo input::placeholder {
+    color: var(--slate-400);
+}
+
+.producto-campo input:focus {
+    border-color: var(--sky-500);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.producto-boton {
+    min-height: 42px;
+    white-space: nowrap;
+}
+
+.producto-alerta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 13px;
+    border-radius: 10px;
+    font-size: 0.86rem;
+    font-weight: 600;
+}
+
+.producto-alerta--error {
+    border: 1px solid #fecaca;
+    background: var(--danger-soft);
+    color: #991b1b;
+}
+
+.producto-alerta--exito {
+    border: 1px solid #bbf7d0;
+    background: var(--success-soft);
+    color: #166534;
+}
+
+.productos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.productos-barra {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    flex-wrap: wrap;
+}
+
+.buscador {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: min(100%, 380px);
+}
+
+.buscador-icono {
+    position: absolute;
+    left: 13px;
+    color: var(--slate-400);
+    pointer-events: none;
+}
+
+.buscador input {
+    width: 100%;
+    padding: 11px 38px;
+    border: 1px solid var(--slate-200);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--navy-950);
+    font-size: 0.88rem;
+    outline: none;
+    box-shadow: var(--shadow-sm);
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.buscador input::placeholder {
+    color: var(--slate-400);
+}
+
+.buscador input:focus {
+    border-color: var(--sky-500);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.14);
+}
+
+.buscador input::-webkit-search-cancel-button {
+    display: none;
+}
+
+.buscador-limpiar {
+    position: absolute;
+    right: 8px;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 50%;
+    background: var(--slate-100);
+    color: var(--slate-500);
+}
+
+.buscador-limpiar:hover {
+    background: var(--slate-200);
+    color: var(--navy-900);
+}
+
+.productos-resultado {
+    color: var(--slate-500);
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.productos-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+}
+
+.producto-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.producto-eliminar {
+    align-self: flex-end;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    padding: 7px 10px;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--slate-400);
+    font-size: 0.76rem;
+    font-weight: 700;
+    transition: background-color 0.2s, color 0.2s, border-color 0.2s;
+}
+
+.producto-eliminar:hover {
+    border-color: #fecaca;
+    background: var(--danger-soft);
+    color: var(--danger);
+}
+
+@media (max-width: 720px) {
+    .producto-form {
+        grid-template-columns: 1fr;
+    }
+
+    .producto-boton {
+        width: 100%;
+    }
+
+    .productos-barra {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .buscador {
+        width: 100%;
+    }
+}

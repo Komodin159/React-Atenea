@@ -1,62 +1,91 @@
 import { useContext } from 'react';
-<<<<<<< HEAD
-
+import { Link } from 'react-router-dom';
+import { ArrowRight, Heart, Trash2, X } from 'lucide-react';
 import { FavoritosContext } from '../context/FavoritosContext';
- 
-export default function MisFavoritos() {
+import './Favoritos.css';
 
-=======
-import { FavoritosContext } from '../context/FavoritosContext';
- 
 export default function MisFavoritos() {
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717
-  const { favoritos, vaciarFavoritos } = useContext(FavoritosContext);
- 
+  const { favoritos, quitarFavorito, vaciarFavoritos } =
+    useContext(FavoritosContext);
+
   return (
-<div>
-<h1>⭐ Mis Favoritos</h1>
-<<<<<<< HEAD
+    <div className="pagina favoritos-pagina">
+      <header className="pagina-cabecera">
+        <div>
+          <span className="pagina-eyebrow">Tu seleccion</span>
+          <h1>Favoritos</h1>
+          <p className="pagina-descripcion">
+            Guarda los productos que te interesan y tenlos siempre a mano.
+          </p>
+        </div>
+        <span className="pagina-contador">
+          <Heart size={16} />
+          {favoritos.length} favoritos
+        </span>
+      </header>
 
       {favoritos.length === 0 ? (
-<p>No tienes ningún producto en tu lista.</p>
-
-=======
-      {favoritos.length === 0 ? (
-<p>No tienes ningún producto en tu lista.</p>
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717
+        <div className="estado-vacio">
+          <Heart size={36} />
+          <h3>Tu lista esta vacia</h3>
+          <p>
+            Explora el inventario y pulsa “Agregar a Favoritos” en los productos
+            que quieras guardar.
+          </p>
+          <Link to="/productos" className="boton-primario">
+            Explorar productos
+            <ArrowRight size={16} />
+          </Link>
+        </div>
       ) : (
-<>
-<button onClick={vaciarFavoritos} style={{ background: '#ef4444', color: 'white', border: 'none', padding: '10px', borderRadius: '5px', marginBottom: '20px', cursor: 'pointer' }}>
-🗑️ Vaciar Lista
-</button>
-<ul style={{ listStyle: 'none', padding: 0 }}>
-<<<<<<< HEAD
+        <>
+          <div className="favoritos-barra">
+            <span>
+              {favoritos.length}{' '}
+              {favoritos.length === 1 ? 'producto guardado' : 'productos guardados'}
+            </span>
+            <button
+              type="button"
+              className="boton-peligro"
+              onClick={vaciarFavoritos}
+            >
+              <Trash2 size={16} />
+              Vaciar lista
+            </button>
+          </div>
 
-=======
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717
-            {favoritos.map((item) => (
-<li key={item.id} style={{ background: 'white', padding: '15px', marginBottom: '10px', borderRadius: '8px', border: '1px solid #e2e8f0' }}>
-<strong>{item.nombre}</strong> - ${item.precio}
-</li>
-<<<<<<< HEAD
+          <div className="favoritos-grid">
+            {favoritos.map((item) => {
+              const id = item._id || item.id;
 
-            ))}
-</ul>
-</>
-
+              return (
+                <article key={id} className="favorito-card">
+                  <div className="favorito-superior">
+                    <div className="favorito-icono">
+                      <Heart size={19} />
+                    </div>
+                    <button
+                      type="button"
+                      className="favorito-quitar"
+                      onClick={() => quitarFavorito(id)}
+                      aria-label={`Quitar ${item.nombre} de favoritos`}
+                      title="Quitar de favoritos"
+                    >
+                      <X size={16} />
+                    </button>
+                  </div>
+                  <div className="favorito-info">
+                    <h3>{item.nombre}</h3>
+                    <span className="favorito-precio">
+                      ${Number(item.precio).toLocaleString('es-CO')}
+                    </span>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </>
       )}
-</div>
-
-  );
-
-}
- 
-=======
-            ))}
-</ul>
-</>
-      )}
-</div>
+    </div>
   );
 }
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717

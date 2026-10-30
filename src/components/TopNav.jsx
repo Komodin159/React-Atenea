@@ -1,57 +1,62 @@
 import './TopNav.css';
-import Buscardor from './Buscardor';
-import RelojDigital from './RelojDigital';
 import { useContext } from 'react';
+import { Link, useLocation } from 'react-router-dom';
+import { Heart, Menu } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
-<<<<<<< HEAD
-import {Link } from 'react-router-dom';
-import {FavoritosContext} from '../context/FavoritosContext';
-=======
-import { Link } from 'react-router-dom';
 import { FavoritosContext } from '../context/FavoritosContext';
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717
 
-function TopNav() {
-    // const usuarioActual = "Juan Perez";
-    const { usuario } = useContext(AuthContext);
-<<<<<<< HEAD
-    const {favoritos} = useContext(FavoritosContext);
-=======
-    const { favoritos } = useContext(FavoritosContext);
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717
+const titulos = {
+  '/': 'Resumen',
+  '/productos': 'Productos',
+  '/usuarios': 'Equipo',
+  '/mis-favoritos': 'Favoritos',
+};
 
-    return (
-        <header className='topnav'>
-            <div className='buscador'>
-                {/* <input type="text" placeholder='Buscar...' className='input-buscar'/>  */}
-                <Buscardor clase="input-buscar"/>
+function TopNav({ abrirMenu }) {
+  const { usuario } = useContext(AuthContext);
+  const { favoritos } = useContext(FavoritosContext);
+  const { pathname } = useLocation();
+
+  const titulo = pathname.startsWith('/usuarios/')
+    ? 'Detalle de usuario'
+    : titulos[pathname] || 'Panel de control';
+
+  return (
+    <header className="topnav">
+      <div className="topnav-izquierda">
+        <button
+          type="button"
+          className="menu-toggle"
+          onClick={abrirMenu}
+          aria-label="Abrir menu de navegacion"
+        >
+          <Menu size={22} />
+        </button>
+        <div className="topnav-contexto">
+          <span>Panel de control</span>
+          <strong>{titulo}</strong>
+        </div>
+      </div>
+
+      <div className="topnav-derecha">
+        <Link to="/mis-favoritos" className="favoritos-acceso">
+          <Heart size={18} />
+          <span className="favoritos-texto">Favoritos</span>
+          <span className="favoritos-contador">{favoritos.length}</span>
+        </Link>
+
+        {usuario && (
+          <div className="perfil-usuario">
+            <div className="avatar">{usuario.nombre.charAt(0).toUpperCase()}</div>
+            <div className="usuario-texto">
+              <strong>{usuario.nombre}</strong>
+              <span>{usuario.rol === 'admin' ? 'Administrador' : 'Usuario'}</span>
             </div>
-            <div className='perfil-usuario'>
-<<<<<<< HEAD
-                <Link to= "/mis-favoritos" style= {{textDecoration: 'none',
-=======
-                <Link to="/mis-favoritos" style={{textDecoration: 'none',
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717
-                    background: '#f1f5f9', padding: '8px 15px',
-                    borderRadius: '20px', color: '#0f172a', fontWeight: 'bold'
-                }}>
-                    Favoritos: <span style={{color: '#ef4444'}}>{favoritos.length}</span>
-                </Link>
-                {usuario.conectado ? (
-                    <>
-                        <div className='avatar'>{usuario.nombre.charAt(0)}</div>
-                        <span className='nombre-usuario'>Hola, {usuario.nombre}</span>
-                        <span className='rol-badge' style={{fontSize: '0.8rem', background: '#e2e8f0', padding: '3px', borderRadius: '5px'}}>
-                            {usuario.rol}
-                        </span>
-                    </>
-                ) : (
-                    <span className='nombre-usuario' style={{ color: 'red' }}>Desconectado</span>
-                ) }
-            </div>
-            {/* <RelojDigital /> */}
-        </header>
-    );
+          </div>
+        )}
+      </div>
+    </header>
+  );
 }
 
 export default TopNav;

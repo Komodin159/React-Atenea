@@ -1,11 +1,25 @@
 import { Link } from 'react-router-dom';
+import { ArrowLeft, Compass } from 'lucide-react';
+import './NotFound.css';
 
-export default function NotFound(){
-    return(
-        <div style={{ textAlign: 'center', marginTop: '50px' }}>
-            <h1>Error 404</h1>
-            <p>La pagina que buscas no existe en este Dashboard</p>
-            <Link to="/" style={{ color: '#38bdf8' }}>Volver al Inicio</Link>
+export default function NotFound() {
+  return (
+    <main className="notfound-page">
+      <section className="notfound-card">
+        <div className="notfound-icono">
+          <Compass size={30} />
         </div>
-    );
+        <span className="notfound-codigo">404</span>
+        <h1>Esta pagina se perdio</h1>
+        <p>
+          La ruta que buscas no existe dentro de Atenea. Regresa al panel para
+          seguir trabajando.
+        </p>
+        <Link to="/" className="boton-primario">
+          <ArrowLeft size={17} />
+          Volver al inicio
+        </Link>
+      </section>
+    </main>
+  );
 }

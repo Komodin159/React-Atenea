@@ -1,29 +1,39 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
+import { Clock3 } from 'lucide-react';
+import './Metrica.css';
 
-export default function RelojDigital(){
+export default function RelojDigital() {
+  const [hora, setHora] = useState(() => new Date());
 
-    const [hora, setHora] = useState( new Date().toLocaleTimeString() );
+  useEffect(() => {
+    const intervalo = setInterval(() => setHora(new Date()), 1000);
+    return () => clearInterval(intervalo);
+  }, []);
 
-    useEffect( ()=>{
+  const horaFormateada = hora.toLocaleTimeString('es-CO', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
 
-        console.log("Componente reloj vacio, iniciando temporizador");
+  const fechaFormateada = hora.toLocaleDateString('es-CO', {
+    weekday: 'long',
+    day: 'numeric',
+    month: 'long',
+  });
 
-        const intervalo = setInterval( ()=>{
-            setHora(new Date().toLocaleTimeString());
-        }, 1000 )
-
-        return () => {
-            console.log("Destruyendo el reloj");
-            clearInterval(intervalo);
-        }
-
-    }, [] );
-
-    return (
-        <div style={{ background: '#1e293b', color: '#38bdf8', padding: '15px', borderRadius: '8px', textAlign: 'center', width: '250px', margin: '10px' }}>
-            <p style={{ margin: 0, fontSize: '0.9rem', color: '#cbd5e1' }}>Hora Local</p>
-            <h2 style={{ margin: '5px 0 0 0', fontSize: '2rem', letterSpacing: '2px' }}>{hora}</h2>
+  return (
+    <section className="tarjeta-metrica tarjeta-reloj">
+      <div className="metrica-cabecera">
+        <div className="metrica-icono">
+          <Clock3 size={21} />
         </div>
-    );
-
+        <div>
+          <span className="metrica-etiqueta">Hora local</span>
+          <strong className="reloj-hora">{horaFormateada}</strong>
+        </div>
+      </div>
+      <p className="reloj-fecha">{fechaFormateada}</p>
+    </section>
+  );
 }

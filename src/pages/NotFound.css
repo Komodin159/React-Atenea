@@ -1,0 +1,59 @@
+.notfound-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background:
+        radial-gradient(circle at 80% 15%, rgba(14, 165, 233, 0.2), transparent 35%),
+        linear-gradient(135deg, var(--navy-950), var(--navy-900));
+}
+
+.notfound-card {
+    width: 100%;
+    max-width: 520px;
+    padding: 44px 36px;
+    border: 1px solid var(--slate-200);
+    border-radius: 24px;
+    background: var(--white);
+    box-shadow: var(--shadow-lg);
+    text-align: center;
+}
+
+.notfound-icono {
+    width: 58px;
+    height: 58px;
+    display: grid;
+    place-items: center;
+    margin: 0 auto 18px;
+    border-radius: 16px;
+    background: var(--sky-100);
+    color: var(--sky-700);
+}
+
+.notfound-codigo {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--sky-600);
+    font-size: clamp(3.6rem, 12vw, 5.4rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.08em;
+}
+
+.notfound-card h1 {
+    font-size: clamp(1.7rem, 4vw, 2.2rem);
+    letter-spacing: -0.04em;
+}
+
+.notfound-card p {
+    max-width: 380px;
+    margin: 12px auto 24px;
+    color: var(--slate-500);
+    font-size: 0.92rem;
+    line-height: 1.6;
+}
+
+.notfound-card .boton-primario {
+    display: inline-flex;
+}

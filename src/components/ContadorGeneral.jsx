@@ -1,45 +1,51 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { Plus, RotateCcw, TrendingUp } from 'lucide-react';
+import './Metrica.css';
 
-export default function ContadorGeneral(){
+export default function ContadorGeneral() {
+  const [ventas, setVentas] = useState(() => {
+    const datoGuardado = localStorage.getItem('ventasDelDia');
+    return datoGuardado ? parseInt(datoGuardado, 10) : 0;
+  });
 
-    const [ventas, setVentas] = useState( ()=>{
-        const datoGuardado = localStorage.getItem('ventasDelDia');
-        return datoGuardado ? parseInt(datoGuardado) : 0;
-    } )
+  useEffect(() => {
+    localStorage.setItem('ventasDelDia', ventas);
+  }, [ventas]);
 
-    useEffect(()=>{
-        localStorage.setItem('ventasDelDia', ventas);
+  const registrarVenta = () => setVentas((actuales) => actuales + 1);
 
-        document.title = `Ventas: ${ventas}`;
+  const reiniciar = () => {
+    setVentas(0);
+    localStorage.removeItem('ventasDelDia');
+  };
 
-        console.log(`Guardado automatico: Ventas = ${ventas}`);
-
-    }, [ventas]);
-
-    const registrarVenta = () => {
-        setVentas(ventas + 1);
-    };
-
-    const reiniciar = ()=>{
-        setVentas(0);
-        localStorage.removeItem('ventasDelDia');
-    };
-
-    return(
-
-        <div style={{ background: '#fff', padding: '20px', borderRadius: '10px', boxShadow: '0 2px 4px rgba(0, 0, 0, 0.05)', width: '300px' }}>
-            <h3 style={{ margin: 0, color: "#64748b" }}>Ventas del dia</h3>
-            <h1 style={{ fontSize: '3rem', color: '#0f172a' }}>{ventas}</h1>
-            <div style={{ display: 'flex', gap: '10px' }}>
-                <button onClick={registrarVenta} style={{ background: '#2ed573', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer', flexGrow: 1 }}>
-                    ➕ Nueva Venta
-                </button>
-                <button onClick={reiniciar} style={{ background: '#ff4757', color: '#fff', border: 'none', padding: '10px', borderRadius: '5px', cursor: 'pointer' }}>
-                    🔄
-                </button>
-            </div>
+  return (
+    <section className="tarjeta-metrica">
+      <div className="metrica-cabecera">
+        <div className="metrica-icono">
+          <TrendingUp size={21} />
         </div>
+        <div>
+          <span className="metrica-etiqueta">Ventas del dia</span>
+          <strong className="metrica-valor">{ventas}</strong>
+        </div>
+      </div>
 
-    );
-
+      <div className="metrica-acciones">
+        <button type="button" className="boton-metrica" onClick={registrarVenta}>
+          <Plus size={16} />
+          Nueva venta
+        </button>
+        <button
+          type="button"
+          className="boton-icono"
+          onClick={reiniciar}
+          aria-label="Reiniciar ventas del dia"
+          title="Reiniciar ventas"
+        >
+          <RotateCcw size={17} />
+        </button>
+      </div>
+    </section>
+  );
 }

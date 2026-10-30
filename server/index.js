@@ -3,6 +3,8 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import { conectarDB } from './db.js';
 import { PORT, JWT_SECRET } from './config.js';
+import authRoutes from './routes/auth.routes.js';
+import productosRoutes from './routes/productos.routes.js';
 
 const app = express();
 
@@ -16,6 +18,9 @@ app.get('/api/health', (_req, res) => {
     baseDeDatos: mongoose.connection.readyState === 1 ? 'conectada' : 'desconectada',
   });
 });
+
+app.use('/api/auth', authRoutes);
+app.use('/api/productos', productosRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ mensaje: 'Ruta no encontrada' });

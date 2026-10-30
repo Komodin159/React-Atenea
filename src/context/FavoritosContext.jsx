@@ -1,50 +1,41 @@
-<<<<<<< HEAD
-import {createContext, useState, useEffect} from "react";
-=======
-import { createContext, useState, useEffect } from "react";
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717
+import { createContext, useEffect, useState } from 'react';
 
 export const FavoritosContext = createContext();
 
-export function FavoritosProvider({children}){
-    const [favoritos, setFavoritos] = useState(()=>{
-        const datosGuardados = localStorage.getItem('misFavoritos');
-        return datosGuardados ? JSON.parse(datosGuardados) : [];
-    });
+export function FavoritosProvider({ children }) {
+  const [favoritos, setFavoritos] = useState(() => {
+    const datosGuardados = localStorage.getItem('misFavoritos');
+    return datosGuardados ? JSON.parse(datosGuardados) : [];
+  });
 
-    useEffect(()=>{
-        localStorage.setItem('misFavoritos', JSON.stringify(favoritos));
-<<<<<<< HEAD
-}, {favoritos}); 
+  useEffect(() => {
+    localStorage.setItem('misFavoritos', JSON.stringify(favoritos));
+  }, [favoritos]);
 
-const agregarFavorito = (producto) => {
-    const existe = favoritos.find(item => item.id === producto.id);
-    if (!existe) {
-        setFavoritos([...favoritos, producto]);
-    }
-};
-
-const vaciarFavoritos = ()=> setFavoritos([]);
-=======
-    }, [favoritos]);
-
-    const agregarFavorito = (producto) => {
-        const existe = favoritos.find(item => item.id === producto.id);
-        if (!existe) {
-            setFavoritos([...favoritos, producto]);
-        }
-    };
-
-    const vaciarFavoritos = ()=> setFavoritos([]);
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717
-
-    return(
-        <FavoritosContext.Provider value={{favoritos, agregarFavorito, vaciarFavoritos}}>
-            {children}
-        </FavoritosContext.Provider>
+  const agregarFavorito = (producto) => {
+    const idProducto = producto._id || producto.id;
+    const existe = favoritos.find(
+      (item) => (item._id || item.id) === idProducto,
     );
-<<<<<<< HEAD
 
-=======
->>>>>>> 5f570b0b1b76b8c54d8553a44c8ea1f061ede717
+    if (!existe) {
+      setFavoritos([...favoritos, producto]);
+    }
+  };
+
+  const quitarFavorito = (id) => {
+    setFavoritos((actuales) =>
+      actuales.filter((item) => (item._id || item.id) !== id),
+    );
+  };
+
+  const vaciarFavoritos = () => setFavoritos([]);
+
+  return (
+    <FavoritosContext.Provider
+      value={{ favoritos, agregarFavorito, quitarFavorito, vaciarFavoritos }}
+    >
+      {children}
+    </FavoritosContext.Provider>
+  );
 }
