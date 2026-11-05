@@ -20,6 +20,7 @@ export default function Productos() {
   const [nombre, setNombre] = useState('');
   const [precio, setPrecio] = useState('');
   const [busqueda, setBusqueda] = useState('');
+  const [categoriaFiltrada, setCategoriaFiltrada] = useState('');
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState('');
@@ -35,7 +36,7 @@ export default function Productos() {
         const { data } = await clienteAxios.get('/productos');
 
         if (activo) {
-          setProductos(data);
+          setProductos(data.productos || data);
         }
       } catch (err) {
         if (!activo) {
@@ -96,6 +97,8 @@ export default function Productos() {
       const { data } = await clienteAxios.post('/productos', {
         nombre: nombre.trim(),
         precio: precioNumero,
+        categoria: categoriaFiltrada || 'general',
+        descripcion: `${nombre} - producto del inventario`,
       });
 
       setProductos((actuales) => [data, ...actuales]);
@@ -124,8 +127,15 @@ export default function Productos() {
     }
   };
 
-  const productosFiltrados = productos.filter((producto) =>
-    producto.nombre.toLowerCase().includes(busqueda.trim().toLowerCase()),
+  const productosFiltrados = productos.filter(
+    (producto) =>
+      (!busqueda || producto.nombre.toLowerCase().includes(busqueda.trim().toLowerCase())) &&
+      (!categoriaFiltrada || producto.categoria === categoriaFiltrada),
+  );
+
+  // Obtener categorías únicas para el filtro
+  const categorias = [...new Set(productos.map((p) => p.categoria))].filter(
+    (c) => c,
   );
 
   return (
@@ -136,7 +146,7 @@ export default function Productos() {
           <h1>Productos</h1>
           <p className="pagina-descripcion">
             Crea, busca y elimina productos. Cada cambio se guarda directamente
-            en la base de datos de Atenea.
+            en la base de datos.
           </p>
         </div>
         <span className="pagina-contador">
@@ -162,7 +172,7 @@ export default function Productos() {
               type="text"
               value={nombre}
               onChange={(evento) => setNombre(evento.target.value)}
-              placeholder="Ej: Mouse Gamer"
+              placeholder="Ej: Licencias Software"
             />
           </div>
 
@@ -179,6 +189,22 @@ export default function Productos() {
             />
           </div>
 
+          <div className="producto-campo">
+            <label htmlFor="producto-categoria">Categoría</label>
+            <select
+              id="producto-categoria"
+              value={categoriaFiltrada}
+              onChange={(e) => setCategoriaFiltrada(e.target.value)}
+            >
+              <option value="">Todas las categorías</option>
+              {categorias.map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </select>
+          </div>
+
           <button
             type="submit"
             className="boton-primario producto-boton"
@@ -192,14 +218,12 @@ export default function Productos() {
 
       {error && (
         <p className="producto-alerta producto-alerta--error" role="alert">
-          <AlertCircle size={17} />
-          {error}
+          <AlertCircle size={17} /> {error}
         </p>
       )}
       {mensaje && (
         <p className="producto-alerta producto-alerta--exito" role="status">
-          <CheckCircle2 size={17} />
-          {mensaje}
+          <CheckCircle2 size={17} /> {mensaje}
         </p>
       )}
 
@@ -217,25 +241,27 @@ export default function Productos() {
 
         {cargando ? (
           <div className="estado-carga">
-            <LoaderCircle size={20} />
-            Cargando inventario...
+            <LoaderCircle size={20} /> Cargando inventario...
           </div>
         ) : productos.length === 0 ? (
           <div className="estado-vacio">
             <Package size={34} />
             <h3>Tu inventario esta vacio</h3>
-            <p>Agrega el primer producto con el formulario de arriba.</p>
+            <p>
+              Agrega el primer producto con el formulario de arriba.
+            </p>
           </div>
         ) : productosFiltrados.length === 0 ? (
           <div className="estado-vacio">
             <SearchX size={34} />
             <h3>No encontramos coincidencias</h3>
             <p>
-              Prueba con otro nombre o limpia la busqueda para ver todos los
+              Prueba con otro nombre o selecciona otra categoria para ver los
               productos.
             </p>
           </div>
         ) : (
+
           <div className="productos-grid">
             {productosFiltrados.map((producto) => (
               <div key={producto._id} className="producto-item">

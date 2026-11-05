@@ -4,7 +4,7 @@ import clienteAxios from '../api/clienteAxios';
 export const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [usuario, setUsuario] = useState(null);
+  const [cliente, setCliente] = useState(null);
   const [token, setToken] = useState(() => localStorage.getItem('token'));
   const [cargando, setCargando] = useState(() => Boolean(localStorage.getItem('token')));
 
@@ -22,13 +22,13 @@ export function AuthProvider({ children }) {
         const { data } = await clienteAxios.get('/auth/perfil');
 
         if (activo) {
-          setUsuario(data);
+          setCliente(data);
           setToken(tokenGuardado);
         }
       } catch {
         if (activo) {
           localStorage.removeItem('token');
-          setUsuario(null);
+          setCliente(null);
           setToken(null);
         }
       } finally {
@@ -48,13 +48,13 @@ export function AuthProvider({ children }) {
   const guardarSesion = (datos) => {
     localStorage.setItem('token', datos.token);
     setToken(datos.token);
-    setUsuario(datos.usuario);
+    setCliente(datos.cliente);
   };
 
   const login = async (email, password) => {
     const { data } = await clienteAxios.post('/auth/login', { email, password });
     guardarSesion(data);
-    return data.usuario;
+    return data.cliente;
   };
 
   const registro = async (nombre, email, password) => {
@@ -64,18 +64,18 @@ export function AuthProvider({ children }) {
       password,
     });
     guardarSesion(data);
-    return data.usuario;
+    return data.cliente;
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     setToken(null);
-    setUsuario(null);
+    setCliente(null);
   };
 
   return (
     <AuthContext.Provider
-      value={{ usuario, token, cargando, login, registro, logout }}
+      value={{ cliente, token, cargando, login, registro, logout }}
     >
       {children}
     </AuthContext.Provider>

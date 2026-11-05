@@ -10,12 +10,12 @@ vi.mock('../context/AuthContext', () => ({
 
 function renderizarRuta() {
   render(
-    <MemoryRouter initialEntries={['/privada']}>
+    <MemoryRouter initialEntries=['/clientes']>
       <Routes>
         <Route element={<RutaProtegida />}>
-          <Route path="/privada" element={<p>Contenido privado</p>} />
+          <Route path="/clientes" element={<p>Panel de clientes</p>} />
+          <Route path="/login" element={<p>Pantalla de login</p>} />
         </Route>
-        <Route path="/login" element={<p>Pantalla de login</p>} />
       </Routes>
     </MemoryRouter>,
   );
@@ -26,23 +26,23 @@ describe('RutaProtegida', () => {
     useAuth.mockReset();
   });
 
-  it('redirige al login cuando no hay usuario', () => {
-    useAuth.mockReturnValue({ usuario: null, cargando: false });
+  it('redirige al login cuando no hay cliente', () => {
+    useAuth.mockReturnValue({ cliente: null, cargando: false });
 
     renderizarRuta();
 
     expect(screen.getByText('Pantalla de login')).toBeInTheDocument();
-    expect(screen.queryByText('Contenido privado')).not.toBeInTheDocument();
+    expect(screen.queryByText('Panel de clientes')).not.toBeInTheDocument();
   });
 
-  it('permite el acceso cuando hay usuario', () => {
+  it('permite el acceso cuando hay cliente', () => {
     useAuth.mockReturnValue({
-      usuario: { nombre: 'Demo' },
+      cliente: { nombre: 'Demo' },
       cargando: false,
     });
 
     renderizarRuta();
 
-    expect(screen.getByText('Contenido privado')).toBeInTheDocument();
+    expect(screen.getByText('Panel de clientes')).toBeInTheDocument();
   });
 });

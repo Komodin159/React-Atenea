@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import Usuario from '../models/Usuario.js';
+import Cliente from '../models/Usuario.js';
 import { JWT_SECRET } from '../config.js';
 import { verificarToken } from '../middlewares/verificarToken.js';
 
@@ -19,6 +19,8 @@ function usuarioSeguro(usuario) {
     nombre: usuario.nombre,
     email: usuario.email,
     rol: usuario.rol,
+    empresa: usuario.empresa,
+    rol_empresa: usuario.rol_empresa,
   };
 }
 
@@ -30,34 +32,43 @@ router.post('/registro', async (req, res) => {
 
     if (!nombre || !email || password.length < 6) {
       return res.status(400).json({
-        mensaje: 'Nombre, correo y una contrasena de al menos 6 caracteres son obligatorios',
+        mensaje: 'Nombre, correo y una contraseña de al menos 6 caracteres son obligatorios',
       });
     }
 
-    const existente = await Usuario.findOne({ email });
+    const existente = await Cliente.findOne({ email });
 
     if (existente) {
-      return res.status(400).json({ mensaje: 'El correo ya esta registrado' });
+      return res.status(400).json({ mensaje: 'El correo ya está registrado' });
     }
 
-    const passwordCifrado = await bcrypt.hash(password, 10);
-    const usuario = await Usuario.create({
+    // Hashear contraseña
+    const salt = await bcrypt.genSalt(10);
+    const passwordCifrado = await bcrypt.hash(password, salt);
+
+    const cliente = await Cliente.create({
       nombre,
       email,
       password: passwordCifrado,
+      // Campos opcionales del formulario
+      empresa: req.body.empresa || '',
+      telefono: req.body.telefono || '',
+      direccion: req.body.direccion || '',
+      rol_empresa: req.body.rol_empresa || 'usuario',
+      nit: req.body.nit || '',
     });
 
     return res.status(201).json({
-      mensaje: 'Usuario registrado correctamente',
-      token: crearToken(usuario),
-      usuario: usuarioSeguro(usuario),
+      mensaje: 'Cliente registrado correctamente',
+      token: crearToken(cliente),
+      usuario: usuarioSeguro(cliente),
     });
   } catch (error) {
     if (error?.code === 11000) {
-      return res.status(400).json({ mensaje: 'El correo ya esta registrado' });
+      return res.status(400).json({ mensaje: 'El correo ya está registrado' });
     }
 
-    return res.status(500).json({ mensaje: 'No se pudo registrar el usuario' });
+    return res.status(500).json({ mensaje: 'No se pudo registrar el cliente' });
   }
 });
 
@@ -67,39 +78,39 @@ router.post('/login', async (req, res) => {
     const password = String(req.body.password || '');
 
     if (!email || !password) {
-      return res.status(400).json({ mensaje: 'Correo y contrasena son obligatorios' });
+      return res.status(400).json({ mensaje: 'Correo y contraseña son obligatorios' });
     }
 
-    const usuario = await Usuario.findOne({ email });
+    const cliente = await Cliente.findOne({ email });
 
-    if (!usuario) {
-      return res.status(401).json({ mensaje: 'Correo o contrasena incorrectos' });
+    if (!cliente) {
+      return res.status(401).json({ mensaje: 'Correo o contraseña incorrectos' });
     }
 
-    const passwordCorrecto = await bcrypt.compare(password, usuario.password);
+    const passwordCorrecto = await bcrypt.compare(password, cliente.password);
 
     if (!passwordCorrecto) {
-      return res.status(401).json({ mensaje: 'Correo o contrasena incorrectos' });
+      return res.status(401).json({ mensaje: 'Correo o contraseña incorrectos' });
     }
 
     return res.json({
-      token: crearToken(usuario),
-      usuario: usuarioSeguro(usuario),
+      token: crearToken(cliente),
+      usuario: usuarioSeguro(cliente),
     });
   } catch {
-    return res.status(500).json({ mensaje: 'No se pudo iniciar sesion' });
+    return res.status(500).json({ mensaje: 'No se pudo iniciar sesión' });
   }
 });
 
 router.get('/perfil', verificarToken, async (req, res) => {
   try {
-    const usuario = await Usuario.findById(req.usuario.id).select('-password');
+    const cliente = await Cliente.findById(req.usuario.id).select('-password');
 
-    if (!usuario) {
-      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
+    if (!cliente) {
+      return res.status(404).json({ mensaje: 'Cliente no encontrado' });
     }
 
-    return res.json(usuario);
+    return res.json(cliente);
   } catch {
     return res.status(500).json({ mensaje: 'No se pudo obtener el perfil' });
   }

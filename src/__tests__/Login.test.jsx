@@ -14,8 +14,8 @@ describe('Login', () => {
 
   beforeEach(() => {
     login.mockReset();
-    login.mockResolvedValue({ nombre: 'Demo' });
-    useAuth.mockReturnValue({ usuario: null, login });
+    login.mockResolvedValue({ cliente: { nombre: 'Demo' }, token: 'token123' });
+    useAuth.mockReturnValue({ cliente: null, login });
   });
 
   it('envia el correo y la contrasena al formulario', async () => {
@@ -34,6 +34,26 @@ describe('Login', () => {
     await user.type(screen.getByLabelText(/contrasena/i), '123456');
     await user.click(screen.getByRole('button', { name: /entrar/i }));
 
+    expect(login).toHaveBeenCalledWith('demo@test.com', '123456');
+  });
+
+  it('redirige al dashboard cuando el login es exitoso', async () => {
+    const user = userEvent.setup();
+
+    render(
+      <MemoryRouter>
+        <Login />
+      </MemoryRouter>,
+    );
+
+    await user.type(
+      screen.getByLabelText(/correo electronico/i),
+      'demo@test.com',
+    );
+    await user.type(screen.getByLabelText(/contrasena/i), '123456');
+    await user.click(screen.getByRole('button', { name: /entrar/i }));
+
+    await new Promise(process.nextTick);
     expect(login).toHaveBeenCalledWith('demo@test.com', '123456');
   });
 });

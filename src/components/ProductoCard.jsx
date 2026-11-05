@@ -6,6 +6,7 @@ import './ProductoCard.css';
 export default function ProductoCard({ producto }) {
   const { agregarFavorito } = useContext(FavoritosContext);
   const precio = Number(producto.precio).toLocaleString('es-CO');
+  const categoria = producto.categoria || 'Sin categoría';
 
   return (
     <article className="producto-card">
@@ -18,7 +19,10 @@ export default function ProductoCard({ producto }) {
 
       <div className="producto-card-info">
         <h3>{producto.nombre}</h3>
-        <p>Producto disponible en inventario</p>
+        <p>{categoria}</p>
+        {producto.descripcion && (
+          <p className="producto-desc">{producto.descripcion}</p>
+        )}
       </div>
 
       <button

@@ -19,14 +19,14 @@ const accesos = [
   {
     to: '/productos',
     icono: Package,
-    titulo: 'Inventario',
-    descripcion: 'Agrega y administra tus productos.',
+    titulo: 'Productos',
+    descripcion: 'Gestiona el inventario de productos.',
   },
   {
-    to: '/usuarios',
+    to: '/clientes',
     icono: Users,
-    titulo: 'Equipo',
-    descripcion: 'Consulta los perfiles del equipo.',
+    titulo: 'Clientes',
+    descripcion: 'Consulta y gestiona tus clientes registrados.',
   },
   {
     to: '/mis-favoritos',
@@ -37,10 +37,10 @@ const accesos = [
 ];
 
 export default function PanelGeneral() {
-  const { usuario } = useAuth();
+  const { cliente } = useAuth();
   const { favoritos } = useContext(FavoritosContext);
 
-  const primerNombre = usuario?.nombre?.split(' ')[0] || 'bienvenido';
+  const primerNombre = cliente?.nombre?.split(' ')[0] || 'bienvenido';
   const fecha = new Date().toLocaleDateString('es-CO', {
     weekday: 'long',
     day: 'numeric',
@@ -57,8 +57,8 @@ export default function PanelGeneral() {
           </span>
           <h1>Hola, {primerNombre}</h1>
           <p>
-            Este es el resumen de Atenea. Revisa tus metricas, administra el
-            inventario y manten todo bajo control desde un solo lugar.
+            Este es el resumen de tu sistema. Revisa tus metricas, administra
+            el inventario y manten todo bajo control desde un solo lugar.
           </p>
           <span className="resumen-fecha">
             <CalendarDays size={16} />
@@ -104,7 +104,9 @@ export default function PanelGeneral() {
           <div>
             <span className="pagina-eyebrow">Atajos</span>
             <h2>Todo a un clic</h2>
-            <p>Las secciones que mas vas a usar, siempre a mano.</p>
+            <p>
+              Las secciones que más vas a usar, siempre a mano.
+            </p>
           </div>
         </div>
 

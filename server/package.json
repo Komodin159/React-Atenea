@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "probar": "node prueba-conexion.js"
+    "probar": "node prueba-conexion.js",
+    "seed": "node seed.js"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",

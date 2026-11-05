@@ -13,7 +13,7 @@ import { useAuth } from '../context/AuthContext';
 const enlaces = [
   { to: '/', etiqueta: 'Resumen', icono: LayoutDashboard, end: true },
   { to: '/productos', etiqueta: 'Productos', icono: Package },
-  { to: '/usuarios', etiqueta: 'Equipo', icono: Users },
+  { to: '/clientes', etiqueta: 'Clientes', icono: Users },
   { to: '/mis-favoritos', etiqueta: 'Favoritos', icono: Heart },
 ];
 
