@@ -59,6 +59,25 @@
     line-height: 1.45;
 }
 
+.producto-desc {
+    margin-top: 6px;
+}
+
+.producto-stock {
+    align-self: flex-start;
+    padding: 5px 10px;
+    border-radius: 999px;
+    background: var(--slate-100);
+    color: var(--slate-600);
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.producto-stock--bajo {
+    background: #fef3c7;
+    color: #92400e;
+}
+
 .producto-favorito {
     display: flex;
     align-items: center;

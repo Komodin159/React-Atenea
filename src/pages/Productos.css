@@ -21,9 +21,13 @@
 
 .producto-form {
     display: grid;
-    grid-template-columns: minmax(180px, 1fr) minmax(140px, 180px) auto;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     align-items: end;
     gap: 14px;
+}
+
+.producto-campo--ancho {
+    grid-column: span 3;
 }
 
 .producto-campo {
@@ -38,13 +42,15 @@
     font-weight: 700;
 }
 
-.producto-campo input {
+.producto-campo input,
+.producto-campo select {
     width: 100%;
     padding: 11px 13px;
     border: 1px solid var(--slate-300);
     border-radius: 9px;
     background: var(--white);
     color: var(--navy-950);
+    font-family: inherit;
     font-size: 0.92rem;
     outline: none;
     transition: border-color 0.2s, box-shadow 0.2s;
@@ -54,9 +60,33 @@
     color: var(--slate-400);
 }
 
-.producto-campo input:focus {
+.producto-campo input:focus,
+.producto-campo select:focus {
     border-color: var(--sky-500);
     box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.15);
+}
+
+.productos-filtro {
+    padding: 10px 14px;
+    border: 1px solid var(--slate-200);
+    border-radius: 999px;
+    background: var(--white);
+    color: var(--slate-600);
+    font-family: inherit;
+    font-size: 0.84rem;
+    font-weight: 600;
+    outline: none;
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+}
+
+.productos-filtro:focus {
+    border-color: var(--sky-500);
+    box-shadow: 0 0 0 3px rgba(14, 165, 233, 0.14);
+}
+
+.productos-barra .productos-resultado {
+    margin-left: auto;
 }
 
 .producto-boton {
@@ -197,9 +227,23 @@
     color: var(--danger);
 }
 
+@media (max-width: 1000px) {
+    .producto-form {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .producto-campo--ancho {
+        grid-column: 1 / -1;
+    }
+}
+
 @media (max-width: 720px) {
     .producto-form {
         grid-template-columns: 1fr;
+    }
+
+    .producto-campo--ancho {
+        grid-column: auto;
     }
 
     .producto-boton {
@@ -207,11 +251,19 @@
     }
 
     .productos-barra {
-        align-items: flex-start;
+        align-items: stretch;
         flex-direction: column;
     }
 
     .buscador {
+        width: 100%;
+    }
+
+    .productos-barra .productos-resultado {
+        margin-left: 0;
+    }
+
+    .productos-filtro {
         width: 100%;
     }
 }

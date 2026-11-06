@@ -8,7 +8,7 @@ import { FavoritosContext } from '../context/FavoritosContext';
 const titulos = {
   '/': 'Resumen',
   '/productos': 'Productos',
-  '/usuarios': 'Equipo',
+  '/clientes': 'Clientes',
   '/mis-favoritos': 'Favoritos',
 };
 
@@ -17,8 +17,8 @@ function TopNav({ abrirMenu }) {
   const { favoritos } = useContext(FavoritosContext);
   const { pathname } = useLocation();
 
-  const titulo = pathname.startsWith('/usuarios/')
-    ? 'Detalle de usuario'
+  const titulo = pathname.startsWith('/clientes/')
+    ? 'Ficha de cliente'
     : titulos[pathname] || 'Panel de control';
 
   return (

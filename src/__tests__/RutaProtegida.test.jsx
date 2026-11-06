@@ -10,12 +10,12 @@ vi.mock('../context/AuthContext', () => ({
 
 function renderizarRuta() {
   render(
-    <MemoryRouter initialEntries=['/clientes']>
+    <MemoryRouter initialEntries={['/clientes']}>
       <Routes>
         <Route element={<RutaProtegida />}>
           <Route path="/clientes" element={<p>Panel de clientes</p>} />
-          <Route path="/login" element={<p>Pantalla de login</p>} />
         </Route>
+        <Route path="/login" element={<p>Pantalla de login</p>} />
       </Routes>
     </MemoryRouter>,
   );
@@ -26,8 +26,8 @@ describe('RutaProtegida', () => {
     useAuth.mockReset();
   });
 
-  it('redirige al login cuando no hay cliente', () => {
-    useAuth.mockReturnValue({ cliente: null, cargando: false });
+  it('redirige al login cuando no hay usuario', () => {
+    useAuth.mockReturnValue({ usuario: null, cargando: false });
 
     renderizarRuta();
 
@@ -35,9 +35,9 @@ describe('RutaProtegida', () => {
     expect(screen.queryByText('Panel de clientes')).not.toBeInTheDocument();
   });
 
-  it('permite el acceso cuando hay cliente', () => {
+  it('permite el acceso cuando hay usuario', () => {
     useAuth.mockReturnValue({
-      cliente: { nombre: 'Demo' },
+      usuario: { nombre: 'Demo' },
       cargando: false,
     });
 

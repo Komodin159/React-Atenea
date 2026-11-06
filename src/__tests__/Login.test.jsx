@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import Login from '../pages/Login';
@@ -14,8 +14,8 @@ describe('Login', () => {
 
   beforeEach(() => {
     login.mockReset();
-    login.mockResolvedValue({ cliente: { nombre: 'Demo' }, token: 'token123' });
-    useAuth.mockReturnValue({ cliente: null, login });
+    login.mockResolvedValue({ usuario: { nombre: 'Demo' }, token: 'token123' });
+    useAuth.mockReturnValue({ usuario: null, login });
   });
 
   it('envia el correo y la contrasena al formulario', async () => {
@@ -27,17 +27,14 @@ describe('Login', () => {
       </MemoryRouter>,
     );
 
-    await user.type(
-      screen.getByLabelText(/correo electronico/i),
-      'demo@test.com',
-    );
-    await user.type(screen.getByLabelText(/contrasena/i), '123456');
+    await user.type(screen.getByLabelText(/correo/i), 'demo@test.com');
+    await user.type(screen.getByLabelText(/contraseña/i), '123456');
     await user.click(screen.getByRole('button', { name: /entrar/i }));
 
     expect(login).toHaveBeenCalledWith('demo@test.com', '123456');
   });
 
-  it('redirige al dashboard cuando el login es exitoso', async () => {
+  it('no muestra error cuando el login es exitoso', async () => {
     const user = userEvent.setup();
 
     render(
@@ -46,14 +43,13 @@ describe('Login', () => {
       </MemoryRouter>,
     );
 
-    await user.type(
-      screen.getByLabelText(/correo electronico/i),
-      'demo@test.com',
-    );
-    await user.type(screen.getByLabelText(/contrasena/i), '123456');
+    await user.type(screen.getByLabelText(/correo/i), 'demo@test.com');
+    await user.type(screen.getByLabelText(/contraseña/i), '123456');
     await user.click(screen.getByRole('button', { name: /entrar/i }));
 
-    await new Promise(process.nextTick);
-    expect(login).toHaveBeenCalledWith('demo@test.com', '123456');
+    await waitFor(() =>
+      expect(login).toHaveBeenCalledWith('demo@test.com', '123456'),
+    );
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
   });
 });

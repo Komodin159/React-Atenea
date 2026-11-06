@@ -19,6 +19,9 @@ export default function Productos() {
   const [productos, setProductos] = useState([]);
   const [nombre, setNombre] = useState('');
   const [precio, setPrecio] = useState('');
+  const [categoria, setCategoria] = useState('');
+  const [stock, setStock] = useState('');
+  const [descripcion, setDescripcion] = useState('');
   const [busqueda, setBusqueda] = useState('');
   const [categoriaFiltrada, setCategoriaFiltrada] = useState('');
   const [cargando, setCargando] = useState(true);
@@ -91,19 +94,30 @@ export default function Productos() {
       return;
     }
 
+    const stockNumero = stock === '' ? 0 : Number(stock);
+
+    if (!Number.isInteger(stockNumero) || stockNumero < 0) {
+      setError('El stock debe ser un numero entero mayor o igual a cero.');
+      return;
+    }
+
     setGuardando(true);
 
     try {
       const { data } = await clienteAxios.post('/productos', {
         nombre: nombre.trim(),
         precio: precioNumero,
-        categoria: categoriaFiltrada || 'general',
-        descripcion: `${nombre} - producto del inventario`,
+        categoria: categoria.trim() || 'General',
+        stock: stockNumero,
+        descripcion: descripcion.trim(),
       });
 
       setProductos((actuales) => [data, ...actuales]);
       setNombre('');
       setPrecio('');
+      setCategoria('');
+      setStock('');
+      setDescripcion('');
       setMensaje('Producto agregado correctamente.');
     } catch (err) {
       manejarError(err, 'No se pudo agregar el producto.');
@@ -145,8 +159,8 @@ export default function Productos() {
           <span className="pagina-eyebrow">Inventario</span>
           <h1>Productos</h1>
           <p className="pagina-descripcion">
-            Crea, busca y elimina productos. Cada cambio se guarda directamente
-            en la base de datos.
+            Crea, busca y elimina productos de la carta. Cada cambio se guarda
+            directamente en la base de datos.
           </p>
         </div>
         <span className="pagina-contador">
@@ -191,18 +205,43 @@ export default function Productos() {
 
           <div className="producto-campo">
             <label htmlFor="producto-categoria">Categoría</label>
-            <select
+            <input
               id="producto-categoria"
-              value={categoriaFiltrada}
-              onChange={(e) => setCategoriaFiltrada(e.target.value)}
-            >
-              <option value="">Todas las categorías</option>
+              type="text"
+              list="categorias-producto"
+              value={categoria}
+              onChange={(evento) => setCategoria(evento.target.value)}
+              placeholder="Ej: Café caliente"
+            />
+            <datalist id="categorias-producto">
               {categorias.map((cat) => (
-                <option key={cat} value={cat}>
-                  {cat}
-                </option>
+                <option key={cat} value={cat} />
               ))}
-            </select>
+            </datalist>
+          </div>
+
+          <div className="producto-campo">
+            <label htmlFor="producto-stock">Stock</label>
+            <input
+              id="producto-stock"
+              type="number"
+              min="0"
+              step="1"
+              value={stock}
+              onChange={(evento) => setStock(evento.target.value)}
+              placeholder="0"
+            />
+          </div>
+
+          <div className="producto-campo producto-campo--ancho">
+            <label htmlFor="producto-descripcion">Descripción</label>
+            <input
+              id="producto-descripcion"
+              type="text"
+              value={descripcion}
+              onChange={(evento) => setDescripcion(evento.target.value)}
+              placeholder="Ingredientes, tamaño o notas del producto"
+            />
           </div>
 
           <button
@@ -234,6 +273,19 @@ export default function Productos() {
             alCambiar={setBusqueda}
             placeholder="Buscar producto por nombre"
           />
+          <select
+            className="productos-filtro"
+            value={categoriaFiltrada}
+            onChange={(evento) => setCategoriaFiltrada(evento.target.value)}
+            aria-label="Filtrar por categoría"
+          >
+            <option value="">Todas las categorías</option>
+            {categorias.map((cat) => (
+              <option key={cat} value={cat}>
+                {cat}
+              </option>
+            ))}
+          </select>
           <span className="productos-resultado">
             Mostrando {productosFiltrados.length} de {productos.length}
           </span>

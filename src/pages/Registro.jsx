@@ -23,7 +23,7 @@ export default function Registro() {
     setError('');
 
     if (password.length < 6) {
-      setError('La contrasena debe tener al menos 6 caracteres.');
+      setError('La contraseña debe tener al menos 6 caracteres.');
       return;
     }
 
@@ -48,7 +48,7 @@ export default function Registro() {
         <span className="auth-marca">React Atenea</span>
         <h1>Crear cuenta</h1>
         <p className="auth-descripcion">
-          Registrate para acceder al panel de administracion.
+          Regístrate para acceder al panel de administración.
         </p>
 
         <form onSubmit={manejarEnvio} className="auth-form">
@@ -59,14 +59,14 @@ export default function Registro() {
               type="text"
               value={nombre}
               onChange={(evento) => setNombre(evento.target.value)}
-              placeholder="Juan Perez"
+              placeholder="Juan Pérez"
               autoComplete="name"
               required
             />
           </div>
 
           <div className="auth-field">
-            <label htmlFor="registro-email">Correo electronico</label>
+            <label htmlFor="registro-email">Correo electrónico</label>
             <input
               id="registro-email"
               type="email"
@@ -79,13 +79,13 @@ export default function Registro() {
           </div>
 
           <div className="auth-field">
-            <label htmlFor="registro-password">Contrasena</label>
+            <label htmlFor="registro-password">Contraseña</label>
             <input
               id="registro-password"
               type="password"
               value={password}
               onChange={(evento) => setPassword(evento.target.value)}
-              placeholder="Minimo 6 caracteres"
+              placeholder="Mínimo 6 caracteres"
               autoComplete="new-password"
               required
             />
@@ -99,7 +99,7 @@ export default function Registro() {
         </form>
 
         <p className="auth-link">
-          Ya tienes cuenta? <Link to="/login">Inicia sesion</Link>
+          ¿Ya tienes cuenta? <Link to="/login">Inicia sesión</Link>
         </p>
       </section>
     </main>

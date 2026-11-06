@@ -2,7 +2,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
 export default function RutaProtegida() {
-  const { cliente, cargando } = useAuth();
+  const { usuario, cargando } = useAuth();
 
   if (cargando) {
     return (
@@ -12,7 +12,7 @@ export default function RutaProtegida() {
     );
   }
 
-  if (!cliente) {
+  if (!usuario) {
     return <Navigate to="/login" replace />;
   }
 

@@ -66,7 +66,7 @@ function Sidebar({ abierto, cerrarMenu }) {
             <span>{usuario?.rol === 'admin' ? 'Administrador' : 'Usuario'}</span>
           </div>
         </div>
-        <button className="btn-logout" onClick={cerrarSesion}>
+        <button className="boton-logout" onClick={cerrarSesion}>
           <LogOut size={18} />
           Cerrar sesion
         </button>

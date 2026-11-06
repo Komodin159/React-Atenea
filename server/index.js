@@ -5,6 +5,7 @@ import { conectarDB } from './db.js';
 import { PORT, JWT_SECRET } from './config.js';
 import authRoutes from './routes/auth.routes.js';
 import productosRoutes from './routes/productos.routes.js';
+import clientesRoutes from './routes/clientes.routes.js';
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.get('/api/health', (_req, res) => {
 
 app.use('/api/auth', authRoutes);
 app.use('/api/productos', productosRoutes);
+app.use('/api/clientes', clientesRoutes);
 
 app.use((_req, res) => {
   res.status(404).json({ mensaje: 'Ruta no encontrada' });

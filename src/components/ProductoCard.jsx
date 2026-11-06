@@ -7,6 +7,8 @@ export default function ProductoCard({ producto }) {
   const { agregarFavorito } = useContext(FavoritosContext);
   const precio = Number(producto.precio).toLocaleString('es-CO');
   const categoria = producto.categoria || 'Sin categoría';
+  const stock = Number(producto.stock ?? 0);
+  const stockBajo = stock <= 5;
 
   return (
     <article className="producto-card">
@@ -24,6 +26,12 @@ export default function ProductoCard({ producto }) {
           <p className="producto-desc">{producto.descripcion}</p>
         )}
       </div>
+
+      <span
+        className={`producto-stock${stockBajo ? ' producto-stock--bajo' : ''}`}
+      >
+        {stockBajo ? 'Stock bajo' : 'Disponible'}: {stock} unidades
+      </span>
 
       <button
         type="button"

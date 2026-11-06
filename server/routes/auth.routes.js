@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import Cliente from '../models/Usuario.js';
+import Usuario from '../models/Usuario.js';
 import { JWT_SECRET } from '../config.js';
 import { verificarToken } from '../middlewares/verificarToken.js';
 
@@ -19,8 +19,6 @@ function usuarioSeguro(usuario) {
     nombre: usuario.nombre,
     email: usuario.email,
     rol: usuario.rol,
-    empresa: usuario.empresa,
-    rol_empresa: usuario.rol_empresa,
   };
 }
 
@@ -36,39 +34,30 @@ router.post('/registro', async (req, res) => {
       });
     }
 
-    const existente = await Cliente.findOne({ email });
+    const existente = await Usuario.findOne({ email });
 
     if (existente) {
       return res.status(400).json({ mensaje: 'El correo ya está registrado' });
     }
 
-    // Hashear contraseña
-    const salt = await bcrypt.genSalt(10);
-    const passwordCifrado = await bcrypt.hash(password, salt);
-
-    const cliente = await Cliente.create({
+    const passwordCifrado = await bcrypt.hash(password, 10);
+    const usuario = await Usuario.create({
       nombre,
       email,
       password: passwordCifrado,
-      // Campos opcionales del formulario
-      empresa: req.body.empresa || '',
-      telefono: req.body.telefono || '',
-      direccion: req.body.direccion || '',
-      rol_empresa: req.body.rol_empresa || 'usuario',
-      nit: req.body.nit || '',
     });
 
     return res.status(201).json({
-      mensaje: 'Cliente registrado correctamente',
-      token: crearToken(cliente),
-      usuario: usuarioSeguro(cliente),
+      mensaje: 'Usuario registrado correctamente',
+      token: crearToken(usuario),
+      usuario: usuarioSeguro(usuario),
     });
   } catch (error) {
     if (error?.code === 11000) {
       return res.status(400).json({ mensaje: 'El correo ya está registrado' });
     }
 
-    return res.status(500).json({ mensaje: 'No se pudo registrar el cliente' });
+    return res.status(500).json({ mensaje: 'No se pudo registrar el usuario' });
   }
 });
 
@@ -81,21 +70,21 @@ router.post('/login', async (req, res) => {
       return res.status(400).json({ mensaje: 'Correo y contraseña son obligatorios' });
     }
 
-    const cliente = await Cliente.findOne({ email });
+    const usuario = await Usuario.findOne({ email });
 
-    if (!cliente) {
+    if (!usuario) {
       return res.status(401).json({ mensaje: 'Correo o contraseña incorrectos' });
     }
 
-    const passwordCorrecto = await bcrypt.compare(password, cliente.password);
+    const passwordCorrecto = await bcrypt.compare(password, usuario.password);
 
     if (!passwordCorrecto) {
       return res.status(401).json({ mensaje: 'Correo o contraseña incorrectos' });
     }
 
     return res.json({
-      token: crearToken(cliente),
-      usuario: usuarioSeguro(cliente),
+      token: crearToken(usuario),
+      usuario: usuarioSeguro(usuario),
     });
   } catch {
     return res.status(500).json({ mensaje: 'No se pudo iniciar sesión' });
@@ -104,13 +93,13 @@ router.post('/login', async (req, res) => {
 
 router.get('/perfil', verificarToken, async (req, res) => {
   try {
-    const cliente = await Cliente.findById(req.usuario.id).select('-password');
+    const usuario = await Usuario.findById(req.usuario.id).select('-password');
 
-    if (!cliente) {
-      return res.status(404).json({ mensaje: 'Cliente no encontrado' });
+    if (!usuario) {
+      return res.status(404).json({ mensaje: 'Usuario no encontrado' });
     }
 
-    return res.json(cliente);
+    return res.json(usuario);
   } catch {
     return res.status(500).json({ mensaje: 'No se pudo obtener el perfil' });
   }

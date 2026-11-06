@@ -28,7 +28,7 @@ export default function Login() {
     } catch (err) {
       setError(
         err.response?.data?.mensaje ||
-          'No se pudo iniciar sesion. Verifica tus datos.',
+          'No se pudo iniciar sesión. Verifica tus datos.',
       );
     } finally {
       setEnviando(false);
@@ -39,14 +39,14 @@ export default function Login() {
     <main className="auth-page">
       <section className="auth-card">
         <span className="auth-marca">React Atenea</span>
-        <h1>Iniciar sesion</h1>
+        <h1>Iniciar sesión</h1>
         <p className="auth-descripcion">
-          Ingresa con tu cuenta para administrar los productos.
+          Ingresa con tu cuenta para administrar productos y clientes.
         </p>
 
         <form onSubmit={manejarEnvio} className="auth-form">
           <div className="auth-field">
-            <label htmlFor="login-email">Correo electronico</label>
+            <label htmlFor="login-email">Correo electrónico</label>
             <input
               id="login-email"
               type="email"
@@ -59,13 +59,13 @@ export default function Login() {
           </div>
 
           <div className="auth-field">
-            <label htmlFor="login-password">Contrasena</label>
+            <label htmlFor="login-password">Contraseña</label>
             <input
               id="login-password"
               type="password"
               value={password}
               onChange={(evento) => setPassword(evento.target.value)}
-              placeholder="Minimo 6 caracteres"
+              placeholder="Mínimo 6 caracteres"
               autoComplete="current-password"
               required
             />
@@ -79,7 +79,7 @@ export default function Login() {
         </form>
 
         <p className="auth-link">
-          No tienes cuenta? <Link to="/registro">Registrate aqui</Link>
+          ¿No tienes cuenta? <Link to="/registro">Regístrate aquí</Link>
         </p>
       </section>
     </main>

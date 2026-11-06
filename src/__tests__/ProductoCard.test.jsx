@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ProductoCard from '../components/ProductoCard';
@@ -47,11 +47,15 @@ describe('ProductoCard', () => {
     };
 
     render(
-      <ProductoCard producto={producto} />
+      <FavoritosProvider>
+        <ProductoCard producto={producto} />
+      </FavoritosProvider>,
     );
 
     expect(screen.getByText('hardware')).toBeInTheDocument();
     expect(screen.getByText('Servidor Dell PowerEdge')).toBeInTheDocument();
-    expect(screen.getByText('Servidor rack 2U')).toBeInTheDocument();
+    expect(
+      screen.getByText('Servidor rack 2U con 2 procesadores Intel Xeon'),
+    ).toBeInTheDocument();
   });
 });

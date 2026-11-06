@@ -1,13 +1,55 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+  AlertCircle,
+  Building2,
+  CheckCircle2,
+  Eye,
+  LoaderCircle,
+  Mail,
+  MapPin,
+  Phone,
+  Plus,
+  Search,
+  Trash2,
+  Users,
+} from 'lucide-react';
 import clienteAxios from '../api/clienteAxios';
 import { useAuth } from '../context/AuthContext';
 import './Clientes.css';
 
-export default function Clientess() {
+const TIPOS_CLIENTE = ['Corporativo', 'PYME', 'Persona natural', 'VIP'];
+
+const FORMULARIO_VACIO = {
+  nombre: '',
+  empresa: '',
+  nit: '',
+  email: '',
+  telefono: '',
+  direccion: '',
+  ciudad: '',
+  tipo: 'Persona natural',
+  notas: '',
+};
+
+function iniciales(nombre = '') {
+  return nombre
+    .split(' ')
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((parte) => parte.charAt(0).toUpperCase())
+    .join('');
+}
+
+export default function Clientes() {
   const [clientes, setClientes] = useState([]);
   const [busqueda, setBusqueda] = useState('');
+  const [filtroTipo, setFiltroTipo] = useState('');
+  const [formulario, setFormulario] = useState(FORMULARIO_VACIO);
   const [cargando, setCargando] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+  const [error, setError] = useState('');
+  const [mensaje, setMensaje] = useState('');
   const { logout } = useAuth();
   const navigate = useNavigate();
 
@@ -16,11 +58,10 @@ export default function Clientess() {
 
     const cargarClientes = async () => {
       try {
-        const { data } = await clienteAxios.get('/auth/perfil');
+        const { data } = await clienteAxios.get('/clientes');
 
         if (activo) {
-          // El perfil ya incluye los datos del cliente
-          setClientes(data.cliente ? [data.cliente] : []);
+          setClientes(Array.isArray(data) ? data : data.clientes || []);
         }
       } catch (err) {
         if (!activo) {
@@ -41,8 +82,6 @@ export default function Clientess() {
       }
     };
 
-    const [error, setError] = useState('');
-
     cargarClientes();
 
     return () => {
@@ -50,22 +89,90 @@ export default function Clientess() {
     };
   }, [logout, navigate]);
 
-  const clientesFiltrados = clientes.filter(
-    (cliente) =>
-      cliente.nombre.toLowerCase().includes(busqueda.trim().toLowerCase()) ||
-      cliente.empresa.toLowerCase().includes(busqueda.trim().toLowerCase()) ||
-      cliente.nit.toLowerCase().includes(busqueda.trim().toLowerCase())
-  );
+  const manejarError = (err, mensajePorDefecto) => {
+    if (err.response?.status === 401) {
+      logout();
+      navigate('/login', { replace: true });
+      return;
+    }
+
+    setError(err.response?.data?.mensaje || mensajePorDefecto);
+  };
+
+  const cambiarCampo = (campo) => (evento) => {
+    setFormulario((actual) => ({ ...actual, [campo]: evento.target.value }));
+  };
+
+  const crearCliente = async (evento) => {
+    evento.preventDefault();
+    setError('');
+    setMensaje('');
+
+    if (!formulario.nombre.trim() || !formulario.email.trim()) {
+      setError('El nombre y el correo son obligatorios.');
+      return;
+    }
+
+    setGuardando(true);
+
+    try {
+      const { data } = await clienteAxios.post('/clientes', formulario);
+      setClientes((actuales) => [data, ...actuales]);
+      setFormulario(FORMULARIO_VACIO);
+      setMensaje('Cliente registrado correctamente.');
+    } catch (err) {
+      manejarError(err, 'No se pudo registrar el cliente.');
+    } finally {
+      setGuardando(false);
+    }
+  };
+
+  const eliminarCliente = async (cliente) => {
+    const confirmado = window.confirm(
+      `¿Eliminar el cliente "${cliente.nombre}"? Esta acción no se puede deshacer.`,
+    );
+
+    if (!confirmado) {
+      return;
+    }
+
+    setError('');
+    setMensaje('');
+
+    try {
+      await clienteAxios.delete(`/clientes/${cliente._id}`);
+      setClientes((actuales) =>
+        actuales.filter((item) => item._id !== cliente._id),
+      );
+      setMensaje('Cliente eliminado.');
+    } catch (err) {
+      manejarError(err, 'No se pudo eliminar el cliente.');
+    }
+  };
+
+  const termino = busqueda.trim().toLowerCase();
+
+  const clientesFiltrados = clientes.filter((cliente) => {
+    const coincideBusqueda =
+      !termino ||
+      [cliente.nombre, cliente.empresa, cliente.nit, cliente.email, cliente.ciudad]
+        .filter(Boolean)
+        .some((valor) => valor.toLowerCase().includes(termino));
+
+    const coincideTipo = !filtroTipo || cliente.tipo === filtroTipo;
+
+    return coincideBusqueda && coincideTipo;
+  });
 
   return (
     <div className="pagina clientes-pagina">
       <header className="pagina-cabecera">
         <div>
-          <span className="pagina-eyebrow">Clientes</span>
-          <h1>Gestión de Clientes</h1>
+          <span className="pagina-eyebrow">Relaciones</span>
+          <h1>Clientes</h1>
           <p className="pagina-descripcion">
-            Lista de clientes registrados en el sistema. Cada cliente tiene su
-            información de contacto y datos empresariales.
+            Administra la base de clientes de la cafetería: datos de contacto,
+            tipo de cuenta y estado. Cada registro se guarda en MongoDB.
           </p>
         </div>
         <span className="pagina-contador">
@@ -78,18 +185,32 @@ export default function Clientess() {
         <div className="seccion-cabecera">
           <div>
             <span className="pagina-eyebrow">Nuevo cliente</span>
-            <h2>Agregar cliente al sistema</h2>
+            <h2>Registrar cliente</h2>
           </div>
-          <span className="form-ayuda">Datos guardados en la base de datos</span>
+          <span className="form-ayuda">Guardado seguro en MongoDB</span>
         </div>
 
-        <form className="cliente-form">
+        <form onSubmit={crearCliente} className="cliente-form">
           <div className="cliente-campo">
-            <label htmlFor="cliente-nombre">Nombre completo</label>
+            <label htmlFor="cliente-nombre">Nombre completo *</label>
             <input
               id="cliente-nombre"
               type="text"
-              placeholder="Carlos Rodríguez"
+              value={formulario.nombre}
+              onChange={cambiarCampo('nombre')}
+              placeholder="Ej: Valentina Ríos"
+              required
+            />
+          </div>
+
+          <div className="cliente-campo">
+            <label htmlFor="cliente-email">Correo electrónico *</label>
+            <input
+              id="cliente-email"
+              type="email"
+              value={formulario.email}
+              onChange={cambiarCampo('email')}
+              placeholder="cliente@correo.com"
               required
             />
           </div>
@@ -99,16 +220,20 @@ export default function Clientess() {
             <input
               id="cliente-empresa"
               type="text"
-              placeholder="InTech Soluciones"
+              value={formulario.empresa}
+              onChange={cambiarCampo('empresa')}
+              placeholder="Ej: Estudio Nube"
             />
           </div>
 
           <div className="cliente-campo">
-            <label htmlFor="cliente-nit">NIT/Número Identificación</label>
+            <label htmlFor="cliente-nit">NIT / Identificación</label>
             <input
               id="cliente-nit"
               type="text"
-              placeholder="900123456-7"
+              value={formulario.nit}
+              onChange={cambiarCampo('nit')}
+              placeholder="901245678-1"
             />
           </div>
 
@@ -117,7 +242,20 @@ export default function Clientess() {
             <input
               id="cliente-telefono"
               type="tel"
+              value={formulario.telefono}
+              onChange={cambiarCampo('telefono')}
               placeholder="+57 300 123 4567"
+            />
+          </div>
+
+          <div className="cliente-campo">
+            <label htmlFor="cliente-ciudad">Ciudad</label>
+            <input
+              id="cliente-ciudad"
+              type="text"
+              value={formulario.ciudad}
+              onChange={cambiarCampo('ciudad')}
+              placeholder="Medellín"
             />
           </div>
 
@@ -126,121 +264,176 @@ export default function Clientess() {
             <input
               id="cliente-direccion"
               type="text"
-              placeholder="Calle 45 #12-34, Medellín"
+              value={formulario.direccion}
+              onChange={cambiarCampo('direccion')}
+              placeholder="Cra 43A #1-50"
             />
           </div>
 
           <div className="cliente-campo">
-            <label htmlFor="cliente-rol">Rol en empresa</label>
-            <select id="cliente-rol">
-              <option value="propietario">Propietario</option>
-              <option value="gerente">Gerente</option>
-              <option value="analista">Analista</option>
-              <option value="desarrollador">Desarrollador</option>
-              <option value="disenador">Diseñador</option>
+            <label htmlFor="cliente-tipo">Tipo de cliente</label>
+            <select
+              id="cliente-tipo"
+              value={formulario.tipo}
+              onChange={cambiarCampo('tipo')}
+            >
+              {TIPOS_CLIENTE.map((tipo) => (
+                <option key={tipo} value={tipo}>
+                  {tipo}
+                </option>
+              ))}
             </select>
+          </div>
+
+          <div className="cliente-campo cliente-campo--ancho">
+            <label htmlFor="cliente-notas">Notas</label>
+            <input
+              id="cliente-notas"
+              type="text"
+              value={formulario.notas}
+              onChange={cambiarCampo('notas')}
+              placeholder="Preferencias, convenios o acuerdos especiales"
+            />
           </div>
 
           <button
             type="submit"
             className="boton-primario producto-boton"
+            disabled={guardando}
           >
-            <i className="lucide-plus" /> Guardar cliente
+            <Plus size={17} />
+            {guardando ? 'Guardando...' : 'Guardar cliente'}
           </button>
         </form>
       </section>
 
       {error && (
         <p className="producto-alerta producto-alerta--error" role="alert">
-          <i className="lucide-alert-circle" size={17} /> {error}
+          <AlertCircle size={17} /> {error}
+        </p>
+      )}
+      {mensaje && (
+        <p className="producto-alerta producto-alerta--exito" role="status">
+          <CheckCircle2 size={17} /> {mensaje}
         </p>
       )}
 
       <section className="clientes-lista">
         <div className="clientes-barra">
-          <input
-            type="search"
-            className="buscador"
-            value={busqueda}
-            onChange={(e) => setBusqueda(e.target.value)}
-            placeholder="Buscar cliente por nombre o NIT"
-            aria-label="Buscar cliente"
-          />
-          {clientesFiltrados.length > 0 ? (
-            <span className="productos-resultado">
-              Mostrando {clientesFiltrados.length} de {clientes.length}
-            </span>
-          ) : (
-            <span className="productos-resultado">
-              No se encontraron clientes
-            </span>
-          )}
+          <div className="buscador">
+            <Search size={17} className="buscador-icono" />
+            <input
+              type="search"
+              value={busqueda}
+              onChange={(evento) => setBusqueda(evento.target.value)}
+              placeholder="Buscar por nombre, empresa, NIT o ciudad"
+              aria-label="Buscar cliente"
+            />
+          </div>
+
+          <select
+            className="clientes-filtro"
+            value={filtroTipo}
+            onChange={(evento) => setFiltroTipo(evento.target.value)}
+            aria-label="Filtrar por tipo de cliente"
+          >
+            <option value="">Todos los tipos</option>
+            {TIPOS_CLIENTE.map((tipo) => (
+              <option key={tipo} value={tipo}>
+                {tipo}
+              </option>
+            ))}
+          </select>
+
+          <span className="productos-resultado">
+            Mostrando {clientesFiltrados.length} de {clientes.length}
+          </span>
         </div>
 
         {cargando ? (
           <div className="estado-carga">
-            <i className="lucide-loader" size={20} /> Cargando clientes...
+            <LoaderCircle size={20} /> Cargando clientes...
           </div>
         ) : clientes.length === 0 ? (
           <div className="estado-vacio">
-            <i className="lucide-users" size={34} />
+            <Users size={34} />
             <h3>No hay clientes registrados</h3>
-            <p>
-              Agrega tu primer cliente usando el formulario de arriba para
-              comenzar a gestionar tu base de datos.
-            </p>
+            <p>Agrega el primer cliente con el formulario de arriba.</p>
+          </div>
+        ) : clientesFiltrados.length === 0 ? (
+          <div className="estado-vacio">
+            <Search size={34} />
+            <h3>No encontramos coincidencias</h3>
+            <p>Prueba con otro término de búsqueda o cambia el tipo de cliente.</p>
           </div>
         ) : (
-
           <div className="clientes-grid">
             {clientesFiltrados.map((cliente) => (
-              <div
-                key={cliente._id}
-                className="cliente-card"
-              >
+              <article key={cliente._id} className="cliente-card">
                 <div className="cliente-superior">
-                  <div className="cliente-icono">
-                    <Users size={19} />
+                  <div className="cliente-identidad">
+                    <div className="cliente-avatar">{iniciales(cliente.nombre)}</div>
+                    <div className="cliente-titulo">
+                      <h3>{cliente.nombre}</h3>
+                      <span>{cliente.empresa || 'Cliente particular'}</span>
+                    </div>
                   </div>
-                  <div>
-                    <h3>{cliente.nombre}</h3>
-                    <small>{cliente.empresa}</small>
-                  </div>
+
+                  <span
+                    className={`cliente-estado ${
+                      cliente.estado === 'Activo'
+                        ? 'cliente-estado--activo'
+                        : 'cliente-estado--inactivo'
+                    }`}
+                  >
+                    {cliente.estado}
+                  </span>
+                </div>
+
+                <div className="cliente-etiquetas">
+                  <span className="cliente-tipo">{cliente.tipo}</span>
+                  {cliente.ciudad && (
+                    <span className="cliente-ciudad">
+                      <MapPin size={13} /> {cliente.ciudad}
+                    </span>
+                  )}
                 </div>
 
                 <div className="cliente-info">
                   <p>
-                    <strong>NIT:</strong> {cliente.nit || 'No informado'}
+                    <Mail size={15} />
+                    {cliente.email}
                   </p>
                   <p>
-                    <strong>Teléfono:</strong> {cliente.telefono || 'No informado'}
+                    <Phone size={15} />
+                    {cliente.telefono || 'Sin teléfono'}
                   </p>
                   <p>
-                    <strong>Dirección:</strong> {cliente.direccion || 'No informada'}
-                  </p>
-                  <p>
-                    <strong>Rol:</strong> {cliente.rol_empresa || 'Usuario'}
+                    <Building2 size={15} />
+                    {cliente.nit || 'Sin NIT registrado'}
                   </p>
                 </div>
 
+                {cliente.notas && <p className="cliente-notas">{cliente.notas}</p>}
+
                 <div className="cliente-acciones">
-                  <button
-                    type="button"
-                    className="boton-metrica"
-                    onClick={() => navigator.clipboard.writeText(cliente.nit || '')}
-                    title="Copiar NIT"
-                  >
-                    <i className="lucide-copy" size={14} /> Copiar NIT
-                  </button>
                   <Link
                     to={`/clientes/${cliente._id}`}
-                    className="boton-icono"
-                    title="Ver perfil completo"
+                    className="cliente-accion cliente-accion--ver"
                   >
-                    <i className="lucide-eye" size={16} />
+                    <Eye size={15} />
+                    Ver ficha
                   </Link>
+                  <button
+                    type="button"
+                    className="cliente-accion cliente-accion--eliminar"
+                    onClick={() => eliminarCliente(cliente)}
+                  >
+                    <Trash2 size={15} />
+                    Eliminar
+                  </button>
                 </div>
-              </div>
+              </article>
             ))}
           </div>
         )}

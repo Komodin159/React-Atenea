@@ -1,6 +1,7 @@
-import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import {
+  AlertTriangle,
   ArrowRight,
   ArrowUpRight,
   CalendarDays,
@@ -8,9 +9,10 @@ import {
   Package,
   Sparkles,
   Users,
+  Wallet,
 } from 'lucide-react';
-import ContadorGeneral from '../components/ContadorGeneral';
 import RelojDigital from '../components/RelojDigital';
+import clienteAxios from '../api/clienteAxios';
 import { useAuth } from '../context/AuthContext';
 import { FavoritosContext } from '../context/FavoritosContext';
 import './PanelGeneral.css';
@@ -20,13 +22,13 @@ const accesos = [
     to: '/productos',
     icono: Package,
     titulo: 'Productos',
-    descripcion: 'Gestiona el inventario de productos.',
+    descripcion: 'Administra la carta y el inventario.',
   },
   {
     to: '/clientes',
     icono: Users,
     titulo: 'Clientes',
-    descripcion: 'Consulta y gestiona tus clientes registrados.',
+    descripcion: 'Consulta y registra cuentas de clientes.',
   },
   {
     to: '/mis-favoritos',
@@ -37,15 +39,55 @@ const accesos = [
 ];
 
 export default function PanelGeneral() {
-  const { cliente } = useAuth();
+  const { usuario, logout } = useAuth();
   const { favoritos } = useContext(FavoritosContext);
+  const navigate = useNavigate();
+  const [resumen, setResumen] = useState(null);
+  const [cargando, setCargando] = useState(true);
 
-  const primerNombre = cliente?.nombre?.split(' ')[0] || 'bienvenido';
+  useEffect(() => {
+    let activo = true;
+
+    const cargarResumen = async () => {
+      try {
+        const { data } = await clienteAxios.get('/productos/resumen');
+
+        if (activo) {
+          setResumen(data);
+        }
+      } catch (err) {
+        if (!activo) {
+          return;
+        }
+
+        if (err.response?.status === 401) {
+          logout();
+          navigate('/login', { replace: true });
+        }
+      } finally {
+        if (activo) {
+          setCargando(false);
+        }
+      }
+    };
+
+    cargarResumen();
+
+    return () => {
+      activo = false;
+    };
+  }, [logout, navigate]);
+
+  const primerNombre = usuario?.nombre?.split(' ')[0] || 'bienvenido';
   const fecha = new Date().toLocaleDateString('es-CO', {
     weekday: 'long',
     day: 'numeric',
     month: 'long',
   });
+
+  const valorInventario = Number(resumen?.valorInventario || 0).toLocaleString(
+    'es-CO',
+  );
 
   return (
     <div className="pagina resumen">
@@ -57,8 +99,9 @@ export default function PanelGeneral() {
           </span>
           <h1>Hola, {primerNombre}</h1>
           <p>
-            Este es el resumen de tu sistema. Revisa tus metricas, administra
-            el inventario y manten todo bajo control desde un solo lugar.
+            Este es el resumen de Atenea. Revisa las métricas de la carta,
+            administra el inventario y mantén tus clientes bajo control desde un
+            solo lugar.
           </p>
           <span className="resumen-fecha">
             <CalendarDays size={16} />
@@ -71,16 +114,63 @@ export default function PanelGeneral() {
             Gestionar productos
             <ArrowRight size={17} />
           </Link>
-          <Link to="/mis-favoritos" className="hero-boton hero-boton--fantasma">
-            Ver favoritos
-            <Heart size={17} />
+          <Link to="/clientes" className="hero-boton hero-boton--fantasma">
+            Ver clientes
+            <Users size={17} />
           </Link>
         </div>
       </section>
 
       <div className="resumen-metricas">
-        <ContadorGeneral />
-        <RelojDigital />
+        <section className="tarjeta-metrica">
+          <div className="metrica-cabecera">
+            <div className="metrica-icono">
+              <Package size={21} />
+            </div>
+            <div>
+              <span className="metrica-etiqueta">Productos en carta</span>
+              <strong className="metrica-valor">
+                {cargando ? '...' : resumen?.total ?? 0}
+              </strong>
+            </div>
+          </div>
+          <Link to="/productos" className="enlace-metrica">
+            Abrir inventario
+            <ArrowUpRight size={15} />
+          </Link>
+        </section>
+
+        <section className="tarjeta-metrica tarjeta-alerta">
+          <div className="metrica-cabecera">
+            <div className="metrica-icono metrica-icono--alerta">
+              <AlertTriangle size={21} />
+            </div>
+            <div>
+              <span className="metrica-etiqueta">Stock bajo</span>
+              <strong className="metrica-valor">
+                {cargando ? '...' : resumen?.stockBajo ?? 0}
+              </strong>
+            </div>
+          </div>
+          <p className="metrica-detalle">
+            Productos con 5 unidades o menos. Repón antes del próximo servicio.
+          </p>
+        </section>
+
+        <section className="tarjeta-metrica">
+          <div className="metrica-cabecera">
+            <div className="metrica-icono metrica-icono--dinero">
+              <Wallet size={21} />
+            </div>
+            <div>
+              <span className="metrica-etiqueta">Valor del inventario</span>
+              <strong className="metrica-valor metrica-valor--moneda">
+                ${cargando ? '...' : valorInventario}
+              </strong>
+            </div>
+          </div>
+          <p className="metrica-detalle">Precio por unidad × stock disponible.</p>
+        </section>
 
         <section className="tarjeta-metrica tarjeta-favoritos">
           <div className="metrica-cabecera">
@@ -97,6 +187,8 @@ export default function PanelGeneral() {
             <ArrowUpRight size={15} />
           </Link>
         </section>
+
+        <RelojDigital />
       </div>
 
       <section className="resumen-seccion">
@@ -104,9 +196,7 @@ export default function PanelGeneral() {
           <div>
             <span className="pagina-eyebrow">Atajos</span>
             <h2>Todo a un clic</h2>
-            <p>
-              Las secciones que más vas a usar, siempre a mano.
-            </p>
+            <p>Las secciones que más vas a usar, siempre a mano.</p>
           </div>
         </div>
 
