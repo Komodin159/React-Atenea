@@ -5,15 +5,15 @@ import './index.css';
 import './styles/paginas.css';
 import App from './App.jsx';
 import { AuthProvider } from './context/AuthContext.jsx';
-import { FavoritosProvider } from './context/FavoritosContext.jsx';
+import { CarritoProvider } from './context/CarritoContext.jsx';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
       <AuthProvider>
-        <FavoritosProvider>
+        <CarritoProvider>
           <App />
-        </FavoritosProvider>
+        </CarritoProvider>
       </AuthProvider>
     </BrowserRouter>
   </StrictMode>,

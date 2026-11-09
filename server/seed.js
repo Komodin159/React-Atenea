@@ -1,5 +1,5 @@
-// Seed script: puebla MongoDB con datos de ejemplo de Atenea Café
-// Ejecutar desde la carpeta server con: npm run seed
+// Datos de demostración para Atenea Cycling.
+// Ejecutar desde server: npm run seed
 
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
@@ -8,269 +8,43 @@ import Usuario from './models/Usuario.js';
 import Cliente from './models/Cliente.js';
 import Producto from './models/Producto.js';
 
-if (!MONGODB_URI) {
-  console.error('Falta MONGODB_URI en el archivo .env (raíz del proyecto o carpeta server)');
-  process.exit(1);
-}
-
-const clientesDemo = [
-  {
-    nombre: 'Valentina Ríos',
-    empresa: 'Estudio Nube',
-    nit: '901245678-1',
-    email: 'valentina.rios@estudionube.co',
-    telefono: '+57 310 456 7890',
-    direccion: 'Cra 43A #1-50',
-    ciudad: 'Medellín',
-    tipo: 'Corporativo',
-    estado: 'Activo',
-    notas: 'Cuenta corporativa con facturación mensual y 20 bebidas de cortesía.',
-  },
-  {
-    nombre: 'Mateo Salazar',
-    empresa: '',
-    nit: '',
-    email: 'mateo.salazar@correo.com',
-    telefono: '+57 301 222 3344',
-    direccion: 'Cl 10 #43-12',
-    ciudad: 'Medellín',
-    tipo: 'VIP',
-    estado: 'Activo',
-    notas: 'Cliente frecuente de la mañana. Prefiere latte de vainilla sin azúcar.',
-  },
-  {
-    nombre: 'Camila Ospina',
-    empresa: 'Panadería La Espiga',
-    nit: '900876543-2',
-    email: 'camila@laespiga.co',
-    telefono: '+57 315 777 8899',
-    direccion: 'Av. 80 #33-21',
-    ciudad: 'Bogotá',
-    tipo: 'PYME',
-    estado: 'Activo',
-    notas: 'Compra repostería al por mayor los martes y jueves.',
-  },
-  {
-    nombre: 'Santiago Herrera',
-    empresa: 'Herrera & Asociados',
-    nit: '800555444-9',
-    email: 'santiago@herreralegal.co',
-    telefono: '+57 320 111 2233',
-    direccion: 'Cl 100 #15-60',
-    ciudad: 'Bogotá',
-    tipo: 'Corporativo',
-    estado: 'Activo',
-    notas: 'Reserva la sala del segundo piso para reuniones cada viernes.',
-  },
-  {
-    nombre: 'Isabella Cardona',
-    empresa: '',
-    nit: '',
-    email: 'isabella.cardona@correo.com',
-    telefono: '+57 312 909 1010',
-    direccion: 'Cra 68 #26-40',
-    ciudad: 'Cali',
-    tipo: 'Persona natural',
-    estado: 'Inactivo',
-    notas: 'No ha realizado pedidos en los últimos tres meses.',
-  },
-  {
-    nombre: 'Andrés Mejía',
-    empresa: 'Café & Datos SAS',
-    nit: '901777888-4',
-    email: 'andres.mejia@cafeydatos.co',
-    telefono: '+57 318 654 3210',
-    direccion: 'Cl 9 #51-33',
-    ciudad: 'Medellín',
-    tipo: 'PYME',
-    estado: 'Activo',
-    notas: 'Pide catering para eventos de tecnología una vez al mes.',
-  },
-  {
-    nombre: 'Daniela Torres',
-    empresa: 'Fundación Semilla',
-    nit: '900123987-6',
-    email: 'daniela.torres@fundacionsemilla.org',
-    telefono: '+57 305 888 7766',
-    direccion: 'Cra 35 #7-89',
-    ciudad: 'Pereira',
-    tipo: 'Corporativo',
-    estado: 'Activo',
-    notas: 'Convenio de descuento del 15% para voluntarios.',
-  },
-  {
-    nombre: 'Sebastián Vargas',
-    empresa: '',
-    nit: '',
-    email: 'sebastian.vargas@correo.com',
-    telefono: '+57 300 333 4455',
-    direccion: 'Cl 45 #22-10',
-    ciudad: 'Barranquilla',
-    tipo: 'VIP',
-    estado: 'Activo',
-    notas: 'Cliente nuevo con tarjeta de fidelidad. Le gusta el cold brew.',
-  },
+const productosDemo = [
+  { nombre: 'Orbea Orca M30i', marca: 'Orbea', categoria: 'Ruta', precio: 15990000, stock: 4, talla: 'S, M, L', materialCuadro: 'Carbono OMX', transmision: 'Shimano 105 Di2 12v', peso: '8.1 kg', imagen: 'https://storage.googleapis.com/c-bikeshop-production-bucket/productimages/ororcam30i/ORORCAM30I2.jpg', descripcion: 'Bicicleta de ruta ligera para ascensos y gran fondo.' },
+  { nombre: 'Trek Émonda SL 6', marca: 'Trek', categoria: 'Ruta', precio: 18400000, stock: 3, talla: '50, 52, 54, 56', materialCuadro: 'Carbono OCLV 500', transmision: 'Shimano 105 Di2 12v', peso: '8.2 kg', imagen: 'https://www.mountainmaniacycles.co.uk/content/products/trek-emonda-sl-6-pro-di2_71742638.jpg', descripcion: 'Aeroligera, precisa y diseñada para competir.' },
+  { nombre: 'Specialized Tarmac SL7', marca: 'Specialized', categoria: 'Ruta', precio: 24900000, stock: 2, talla: '52, 54, 56', materialCuadro: 'Carbono FACT 10r', transmision: 'SRAM Rival eTap AXS', peso: '7.7 kg', imagen: 'https://roadbikeaction.com/wp-content/uploads/2020/07/TGTP2060_specialized_tarmac_sl7e-scaled.jpg', descripcion: 'Rendimiento de competición en cada kilómetro.' },
+  { nombre: 'Canyon Ultimate CF SL', marca: 'Canyon', categoria: 'Ruta', precio: 17200000, stock: 5, talla: 'XS, S, M, L', materialCuadro: 'Carbono CF SL', transmision: 'Shimano Ultegra 12v', peso: '7.9 kg', imagen: 'https://www.canyon.com/dw/image/v2/BCML_PRD/on/demandware.static/-/Sites-canyon-master/default/dw358146ab/images/full/full_2023_/2023/full_2023_ultimate-cf-sl7_3315_P01_P5.png', descripcion: 'Equilibrio ideal entre rigidez, comodidad y velocidad.' },
+  { nombre: 'Orbea Occam H30', marca: 'Orbea', categoria: 'MTB', precio: 11800000, stock: 6, talla: 'S, M, L', materialCuadro: 'Aluminio hidroformado', transmision: 'Shimano Deore 12v', peso: '14.2 kg', imagen: 'https://mtbmonster.com/product_images/uploaded_images/orbea-occam-h30-lime-green-new.jpg', descripcion: 'Trail de doble suspensión para explorar cualquier sendero.' },
+  { nombre: 'Trek Fuel EX 8', marca: 'Trek', categoria: 'MTB', precio: 19500000, stock: 3, talla: 'M, L, XL', materialCuadro: 'Aluminio Alpha', transmision: 'Shimano XT 12v', peso: '14.0 kg', imagen: 'https://media.trekbikes.com/image/upload/w_1200/FuelEX8XT-24-41327-B-Portrait', descripcion: 'Suspensión activa y geometría moderna de trail.' },
+  { nombre: 'Specialized Stumpjumper', marca: 'Specialized', categoria: 'MTB', precio: 21800000, stock: 2, talla: 'S2, S3, S4', materialCuadro: 'Carbono FACT 11m', transmision: 'SRAM GX Eagle', peso: '13.6 kg', imagen: 'https://flowmountainbike.com/wp-content/uploads/2024/09/2025-Specialized-Stumpjumper-15-Pro-YouTube-07371.jpg', descripcion: 'Control total en descensos y eficiencia en ascensos.' },
+  { nombre: 'Canyon Neuron CF 8', marca: 'Canyon', categoria: 'MTB', precio: 20900000, stock: 4, talla: 'S, M, L', materialCuadro: 'Carbono CF', transmision: 'Shimano XT 12v', peso: '13.4 kg', imagen: 'https://enduro-mtb.com/wp-content/uploads/2019/10/Canyon-Neuron-Review-Short-Travel-Grouptest-Magazine-211A8481.jpg', descripcion: 'Mountain bike versátil para rutas largas y técnicas.' },
+  { nombre: 'Orbea Terra M31e', marca: 'Orbea', categoria: 'Gravel', precio: 14800000, stock: 5, talla: 'S, M, L', materialCuadro: 'Carbono OMR', transmision: 'Shimano GRX 12v', peso: '9.3 kg', imagen: 'https://www.sport-bittl.com/images/product_images/original_images/orbea_terram31eteam_gravelbike_caramel_b_31661737315_20250820.jpg', descripcion: 'Gravel rápida para carretera, caminos y aventura.' },
+  { nombre: 'Trek Checkpoint SL 5', marca: 'Trek', categoria: 'Gravel', precio: 17700000, stock: 4, talla: '52, 54, 56', materialCuadro: 'Carbono OCLV 500', transmision: 'Shimano GRX 12v', peso: '9.6 kg', imagen: 'https://thebikecellar.co.uk/content/products/trek-2025-checkpoint-sl-5-axs-gen-3_51337.jpg', descripcion: 'Comodidad de larga distancia con amplio paso de rueda.' },
+  { nombre: 'Specialized Turbo Vado 4.0', marca: 'Specialized', categoria: 'Eléctrica', precio: 18900000, stock: 3, talla: 'S, M, L', materialCuadro: 'Aluminio Premium', transmision: 'Shimano Deore 10v', peso: '25.0 kg', imagen: 'https://www.pricerunner.dk/product/3245440871/Specialized-Turbo-Vado-4.0-IGH-Seafoam-Pearl.jpg', descripcion: 'E-bike urbana potente, conectada y elegante.' },
+  { nombre: 'Canyon Pathlite:ON 6', marca: 'Canyon', categoria: 'Eléctrica', precio: 16400000, stock: 4, talla: 'S, M, L', materialCuadro: 'Aluminio 6061', transmision: 'Shimano Deore 11v', peso: '23.8 kg', imagen: 'https://urbanbike.news/wp-content/uploads/2024/06/Canyon-Pathlite-ON-SL-6-Test-Review-Design.jpg', descripcion: 'E-bike híbrida para ciudad, viajes y caminos de tierra.' },
 ];
 
-const productosDemo = [
-  {
-    nombre: 'Espresso doble',
-    precio: 6500,
-    categoria: 'Café caliente',
-    stock: 40,
-    descripcion: 'Doble shot de espresso con grano de origen Huila.',
-  },
-  {
-    nombre: 'Cappuccino clásico',
-    precio: 9500,
-    categoria: 'Café caliente',
-    stock: 32,
-    descripcion: 'Espresso con leche vaporizada y espuma cremosa.',
-  },
-  {
-    nombre: 'Latte de vainilla',
-    precio: 10500,
-    categoria: 'Café caliente',
-    stock: 25,
-    descripcion: 'Latte suave con jarabe de vainilla natural.',
-  },
-  {
-    nombre: 'Mocaccino',
-    precio: 11500,
-    categoria: 'Café caliente',
-    stock: 18,
-    descripcion: 'Café, chocolate y leche coronado con crema batida.',
-  },
-  {
-    nombre: 'Cold brew',
-    precio: 10000,
-    categoria: 'Bebidas frías',
-    stock: 22,
-    descripcion: 'Café extraído en frío durante 16 horas, servido con hielo.',
-  },
-  {
-    nombre: 'Frappé de caramelo',
-    precio: 13500,
-    categoria: 'Bebidas frías',
-    stock: 15,
-    descripcion: 'Bebida helada de café con caramelo y crema.',
-  },
-  {
-    nombre: 'Limonada de coco',
-    precio: 9000,
-    categoria: 'Bebidas frías',
-    stock: 28,
-    descripcion: 'Limonada natural con crema de coco.',
-  },
-  {
-    nombre: 'Matcha latte helado',
-    precio: 12500,
-    categoria: 'Bebidas frías',
-    stock: 12,
-    descripcion: 'Té matcha ceremonial con leche y hielo.',
-  },
-  {
-    nombre: 'Croissant de almendra',
-    precio: 7500,
-    categoria: 'Repostería',
-    stock: 20,
-    descripcion: 'Croissant hojaldrado relleno de crema de almendra.',
-  },
-  {
-    nombre: 'Torta de zanahoria',
-    precio: 8500,
-    categoria: 'Repostería',
-    stock: 10,
-    descripcion: 'Porción de torta húmeda con frosting de queso crema.',
-  },
-  {
-    nombre: 'Cheesecake de maracuyá',
-    precio: 11000,
-    categoria: 'Repostería',
-    stock: 8,
-    descripcion: 'Cheesecake cremoso con coulis de maracuyá.',
-  },
-  {
-    nombre: 'Brownie con helado',
-    precio: 12000,
-    categoria: 'Repostería',
-    stock: 6,
-    descripcion: 'Brownie tibio de chocolate con bola de helado de vainilla.',
-  },
-  {
-    nombre: 'Sándwich de pollo',
-    precio: 16500,
-    categoria: 'Comidas',
-    stock: 14,
-    descripcion: 'Pan artesanal, pollo desmechado, lechuga y salsa de la casa.',
-  },
-  {
-    nombre: 'Bowl de quinoa',
-    precio: 19500,
-    categoria: 'Comidas',
-    stock: 9,
-    descripcion: 'Quinoa, vegetales asados, aguacate y aderezo de limón.',
-  },
-  {
-    nombre: 'Bagel de salmón',
-    precio: 21000,
-    categoria: 'Comidas',
-    stock: 5,
-    descripcion: 'Bagel con salmón ahumado, queso crema y alcaparras.',
-  },
-  {
-    nombre: 'Granola con yogur',
-    precio: 9500,
-    categoria: 'Snacks',
-    stock: 16,
-    descripcion: 'Yogur griego con granola artesanal y frutos rojos.',
-  },
-  {
-    nombre: 'Galletas de avena',
-    precio: 4500,
-    categoria: 'Snacks',
-    stock: 30,
-    descripcion: 'Paquete de tres galletas de avena y chocolate.',
-  },
-  {
-    nombre: 'Barra de chocolate',
-    precio: 6000,
-    categoria: 'Snacks',
-    stock: 24,
-    descripcion: 'Barra de chocolate 70% cacao de origen colombiano.',
-  },
+const clientesDemo = [
+  { nombre: 'Jotaro Kujo', empresa: 'Fundación Speedwagon', nit: '901245678-1', email: 'jotaro@atenea.cycling', telefono: '+57 310 456 7890', direccion: 'Cra 43A #1-50', ciudad: 'Medellín', tipo: 'VIP', estado: 'Activo', notas: 'Interesado en una bicicleta de ruta de carbono para gran fondo.', avatar: 'https://upload.wikimedia.org/wikipedia/en/9/9a/JotaroKujo.png' },
+  { nombre: 'Dio Brando', empresa: '', nit: '', email: 'dio@atenea.cycling', telefono: '+57 301 222 3344', direccion: 'Cl 10 #43-12', ciudad: 'Medellín', tipo: 'Persona natural', estado: 'Activo', notas: 'Solicitó cotización de MTB doble suspensión.', avatar: 'https://upload.wikimedia.org/wikipedia/en/d/d2/Dio_Brando.jpg' },
+  { nombre: 'Giorno Giovanna', empresa: 'Passione Racing', nit: '900876543-2', email: 'giorno@atenea.cycling', telefono: '+57 315 777 8899', direccion: 'Av. 80 #33-21', ciudad: 'Bogotá', tipo: 'Corporativo', estado: 'Activo', notas: 'Convenio para bicicletas corporativas y accesorios.', avatar: 'https://upload.wikimedia.org/wikipedia/en/b/b4/Giorno_Giovanna.png' },
+  { nombre: 'Josuke Higashikata', empresa: '', nit: '', email: 'josuke@atenea.cycling', telefono: '+57 320 111 2233', direccion: 'Cl 100 #15-60', ciudad: 'Bogotá', tipo: 'Persona natural', estado: 'Activo', notas: 'Busca gravel para viajes de fin de semana.', avatar: 'https://upload.wikimedia.org/wikipedia/en/d/dc/Jjbagroup.jpg' },
 ];
 
 async function ejecutar() {
-  try {
-    await mongoose.connect(MONGODB_URI);
-    console.log('🟢 Conectado a MongoDB Atlas');
-
-    // Usuario demo para iniciar sesión
-    const passwordCifrado = await bcrypt.hash('admin123', 10);
-    await Usuario.findOneAndUpdate(
-      { email: 'admin@atenea.com' },
-      { nombre: 'Administrador Atenea', email: 'admin@atenea.com', password: passwordCifrado, rol: 'admin' },
-      { upsert: true, new: true, setDefaultsOnInsert: true },
-    );
-    console.log('👤 Usuario demo listo -> admin@atenea.com / admin123');
-
-    await Cliente.deleteMany({});
-    const clientes = await Cliente.insertMany(clientesDemo);
-    console.log(`📝 ${clientes.length} clientes insertados`);
-
-    await Producto.deleteMany({});
-    const productos = await Producto.insertMany(productosDemo);
-    console.log(`📦 ${productos.length} productos insertados`);
-
-    console.log('✅ Seed completado exitosamente');
-    await mongoose.disconnect();
-    process.exit(0);
-  } catch (error) {
-    console.error('❌ Error en seed:', error.message);
-    await mongoose.disconnect().catch(() => {});
-    process.exit(1);
-  }
+  if (!MONGODB_URI) throw new Error('Falta MONGODB_URI en el archivo .env');
+  await mongoose.connect(MONGODB_URI);
+  const password = await bcrypt.hash('admin123', 10);
+  await Usuario.findOneAndUpdate({ email: 'admin@atenea.com' }, { nombre: 'Administrador Atenea', email: 'admin@atenea.com', password, rol: 'admin' }, { upsert: true, setDefaultsOnInsert: true });
+  await Cliente.deleteMany({});
+  await Producto.deleteMany({});
+  await Cliente.insertMany(clientesDemo);
+  await Producto.insertMany(productosDemo);
+  console.log(`✅ Atenea Cycling lista: ${productosDemo.length} bicicletas y ${clientesDemo.length} clientes.`);
+  await mongoose.disconnect();
 }
 
-ejecutar();
+ejecutar().catch(async (error) => {
+  console.error('❌ Error en seed:', error.message);
+  await mongoose.disconnect().catch(() => {});
+  process.exit(1);
+});

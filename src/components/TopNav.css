@@ -1,15 +1,15 @@
 .topnav {
     position: sticky;
-    top: 0;
+    top: 72px;
     z-index: 20;
-    min-height: 78px;
+    min-height: 64px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
     padding: 12px clamp(20px, 4vw, 48px);
-    background: rgba(255, 255, 255, 0.86);
-    border-bottom: 1px solid rgba(226, 232, 240, 0.9);
+    background: rgba(244, 243, 238, 0.9);
+    border-bottom: 1px solid var(--slate-200);
     backdrop-filter: blur(16px);
 }
 
@@ -55,18 +55,18 @@
     height: 42px;
     place-items: center;
     border: 1px solid var(--slate-200);
-    border-radius: 12px;
+    border-radius: 5px;
     background: var(--white);
     color: var(--navy-900);
 }
 
-.favoritos-acceso {
+.cotizacion-acceso {
     display: flex;
     align-items: center;
     gap: 8px;
     padding: 9px 12px;
     border: 1px solid var(--slate-200);
-    border-radius: 999px;
+    border-radius: 5px;
     background: var(--white);
     color: var(--navy-900);
     font-size: 0.88rem;
@@ -76,21 +76,21 @@
     transition: border-color 0.2s, color 0.2s, transform 0.2s;
 }
 
-.favoritos-acceso:hover {
-    border-color: #7dd3fc;
+.cotizacion-acceso:hover {
+    border-color: var(--sky-500);
     color: var(--sky-700);
     transform: translateY(-1px);
 }
 
-.favoritos-acceso svg {
-    color: var(--sky-500);
-    fill: rgba(14, 165, 233, 0.14);
+.cotizacion-acceso svg {
+    color: var(--sky-700);
+    fill: rgba(199, 230, 0, 0.16);
 }
 
-.favoritos-contador {
+.cotizacion-contador {
     min-width: 22px;
     padding: 2px 6px;
-    border-radius: 999px;
+    border-radius: 4px;
     background: var(--sky-100);
     color: var(--sky-700);
     font-size: 0.75rem;
@@ -111,8 +111,9 @@
     display: grid;
     place-items: center;
     border-radius: 12px;
-    background: linear-gradient(135deg, #0ea5e9, #0369a1);
-    color: #ffffff;
+    border-radius: 5px;
+    background: var(--sky-500);
+    color: var(--navy-950);
     font-weight: 700;
     box-shadow: 0 8px 18px rgba(14, 165, 233, 0.22);
 }
@@ -145,11 +146,12 @@
 
 @media (max-width: 620px) {
     .topnav {
+        top: 64px;
         min-height: 70px;
         padding: 10px 16px;
     }
 
-    .favoritos-texto,
+    .cotizacion-texto,
     .usuario-texto {
         display: none;
     }

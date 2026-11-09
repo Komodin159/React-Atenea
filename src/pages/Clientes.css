@@ -166,6 +166,27 @@
     letter-spacing: 0.02em;
 }
 
+.cliente-avatar {
+    overflow: hidden;
+    background: var(--slate-100);
+}
+
+.cliente-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.detalle-avatar {
+    overflow: hidden;
+}
+
+.detalle-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .detalle-avatar {
     width: 54px;
     height: 54px;

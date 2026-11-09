@@ -1,6 +1,6 @@
-# Atenea Café · Panel de gestión
+# Atenea Cycling · Bicicletas premium
 
-Aplicación web para administrar una cafetería: autenticación JWT, inventario de productos, base de clientes y favoritos. El frontend está hecho con React + Vite y el backend con Express + MongoDB Atlas.
+Aplicación web de bicicletas premium: autenticación JWT, catálogo de bicicletas, fichas técnicas, cotización, inventario y base de clientes. El frontend está hecho con React + Vite y el backend con Express + MongoDB Atlas.
 
 ## Tecnologías
 
@@ -19,9 +19,9 @@ Aplicación web para administrar una cafetería: autenticación JWT, inventario 
 - Panel general con métricas reales del inventario (productos, stock bajo, valor y categorías).
 - CRUD de productos: listar, crear, filtrar por categoría y eliminar.
 - Módulo de clientes: listar, buscar, filtrar por tipo, crear, ver ficha, actualizar estado/tipo/notas y eliminar.
-- Persistencia de favoritos en `localStorage`.
+- Cotización persistente en `localStorage`.
 - Validación de sesión al recargar la página.
-- Datos de demostración de cafetería mediante `npm run seed`.
+- Datos de demostración de bicicletas premium mediante `npm run seed`.
 
 ## Requisitos
 
@@ -64,7 +64,7 @@ cd server
 npm run seed
 ```
 
-El seed crea el usuario demo **admin@atenea.com / admin123**, 8 clientes y 18 productos de cafetería.
+El seed crea el usuario demo **admin@atenea.com / admin123**, 4 clientes y 12 bicicletas.
 
 ## Ejecución
 
@@ -134,9 +134,9 @@ src/
   __tests__/        Pruebas unitarias
   api/              Cliente Axios e interceptor JWT
   components/       Componentes reutilizables
-  context/          Sesión y favoritos
+  context/          Sesión y cotización
   layouts/          Layout del dashboard
-  pages/            Login, registro, panel, productos, clientes y favoritos
+  pages/            Login, registro, panel, catálogo, cotización y clientes
 server/
   middlewares/      Verificación del token
   models/           Modelos Usuario, Cliente y Producto
@@ -152,8 +152,8 @@ server/
 1. Abrir la aplicación sin sesión: redirige a `/login`.
 2. Iniciar sesión con el usuario demo o crear una cuenta en `/registro`.
 3. Revisar las métricas del panel general.
-4. Crear un producto desde la página Productos.
+4. Crear una bicicleta desde la página Catálogo.
 5. Registrar un cliente y abrir su ficha para cambiar estado o notas.
-6. Agregar un producto a favoritos y abrir Mis Favoritos.
-7. Recargar la página y comprobar que la sesión y los favoritos siguen activos.
+6. Agregar una bicicleta a la cotización y comprobar el total.
+7. Recargar la página y comprobar que la sesión y la cotización siguen activas.
 8. Cerrar sesión y confirmar la redirección a `/login`.

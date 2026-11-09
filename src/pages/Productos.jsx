@@ -156,24 +156,24 @@ export default function Productos() {
     <div className="pagina productos-pagina">
       <header className="pagina-cabecera">
         <div>
-          <span className="pagina-eyebrow">Inventario</span>
-          <h1>Productos</h1>
+          <span className="pagina-eyebrow">Atenea Cycling</span>
+          <h1>Catálogo de bicicletas</h1>
           <p className="pagina-descripcion">
-            Crea, busca y elimina productos de la carta. Cada cambio se guarda
+            Crea, busca y elimina bicicletas. Cada cambio se guarda
             directamente en la base de datos.
           </p>
         </div>
         <span className="pagina-contador">
           <Package size={16} />
-          {productos.length} productos
+          {productos.length} bicicletas
         </span>
       </header>
 
       <section className="producto-form-card">
         <div className="seccion-cabecera">
           <div>
-            <span className="pagina-eyebrow">Nuevo producto</span>
-            <h2>Agregar al inventario</h2>
+            <span className="pagina-eyebrow">Nueva bicicleta</span>
+            <h2>Agregar al catálogo</h2>
           </div>
           <span className="form-ayuda">Guardado seguro en MongoDB</span>
         </div>
@@ -186,7 +186,7 @@ export default function Productos() {
               type="text"
               value={nombre}
               onChange={(evento) => setNombre(evento.target.value)}
-              placeholder="Ej: Licencias Software"
+              placeholder="Ej: Orbea Orca M30i"
             />
           </div>
 
@@ -211,7 +211,7 @@ export default function Productos() {
               list="categorias-producto"
               value={categoria}
               onChange={(evento) => setCategoria(evento.target.value)}
-              placeholder="Ej: Café caliente"
+              placeholder="Ej: Ruta, MTB, Gravel o Eléctrica"
             />
             <datalist id="categorias-producto">
               {categorias.map((cat) => (
@@ -240,7 +240,7 @@ export default function Productos() {
               type="text"
               value={descripcion}
               onChange={(evento) => setDescripcion(evento.target.value)}
-              placeholder="Ingredientes, tamaño o notas del producto"
+              placeholder="Componentes, uso recomendado o detalles de la bicicleta"
             />
           </div>
 
@@ -271,7 +271,7 @@ export default function Productos() {
           <Buscador
             valor={busqueda}
             alCambiar={setBusqueda}
-            placeholder="Buscar producto por nombre"
+            placeholder="Buscar bicicleta por nombre"
           />
           <select
             className="productos-filtro"

@@ -35,6 +35,24 @@ router.get('/', async (_req, res) => {
   }
 });
 
+router.get('/:id', async (req, res) => {
+  try {
+    if (!mongoose.isValidObjectId(req.params.id)) {
+      return res.status(400).json({ mensaje: 'El id de la bicicleta no es válido' });
+    }
+
+    const producto = await Producto.findById(req.params.id);
+
+    if (!producto) {
+      return res.status(404).json({ mensaje: 'Bicicleta no encontrada' });
+    }
+
+    return res.json(producto);
+  } catch {
+    return res.status(500).json({ mensaje: 'No se pudo obtener la bicicleta' });
+  }
+});
+
 router.post('/', async (req, res) => {
   try {
     const nombre = String(req.body.nombre || '').trim();
@@ -42,6 +60,12 @@ router.post('/', async (req, res) => {
     const categoria = String(req.body.categoria || 'General').trim();
     const stock = Number(req.body.stock ?? 0);
     const descripcion = String(req.body.descripcion || '').trim();
+    const marca = String(req.body.marca || 'Atenea Cycling').trim();
+    const talla = String(req.body.talla || 'M').trim();
+    const materialCuadro = String(req.body.materialCuadro || '').trim();
+    const transmision = String(req.body.transmision || '').trim();
+    const peso = String(req.body.peso || '').trim();
+    const imagen = String(req.body.imagen || '').trim();
 
     if (!nombre || !Number.isFinite(precio) || precio < 0) {
       return res
@@ -61,6 +85,12 @@ router.post('/', async (req, res) => {
       categoria,
       stock,
       descripcion,
+      marca,
+      talla,
+      materialCuadro,
+      transmision,
+      peso,
+      imagen,
     });
 
     return res.status(201).json(producto);

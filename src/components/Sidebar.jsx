@@ -1,20 +1,20 @@
 import './Sidebar.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
-  Heart,
+  ShoppingCart,
   LayoutDashboard,
   LogOut,
   Package,
-  Sparkles,
+  Bike,
   Users,
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 const enlaces = [
-  { to: '/', etiqueta: 'Resumen', icono: LayoutDashboard, end: true },
-  { to: '/productos', etiqueta: 'Productos', icono: Package },
+  { to: '/', etiqueta: 'Inicio', icono: LayoutDashboard, end: true },
+  { to: '/productos', etiqueta: 'Catálogo', icono: Package },
+  { to: '/carrito', etiqueta: 'Mi cotización', icono: ShoppingCart },
   { to: '/clientes', etiqueta: 'Clientes', icono: Users },
-  { to: '/mis-favoritos', etiqueta: 'Favoritos', icono: Heart },
 ];
 
 function Sidebar({ abierto, cerrarMenu }) {
@@ -30,11 +30,11 @@ function Sidebar({ abierto, cerrarMenu }) {
     <aside className={`sidebar${abierto ? ' sidebar--abierta' : ''}`}>
       <div className="sidebar-logo">
         <div className="sidebar-marca">
-          <Sparkles size={22} strokeWidth={2.4} />
+          <Bike size={22} strokeWidth={2.4} />
         </div>
         <div>
-          <h2>Atenea</h2>
-          <span>Panel de control</span>
+          <h2>Atenea Cycling</h2>
+          <span>Bicicletas premium</span>
         </div>
       </div>
 

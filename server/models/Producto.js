@@ -28,6 +28,36 @@ const productoSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    marca: {
+      type: String,
+      trim: true,
+      default: 'Atenea Cycling',
+    },
+    talla: {
+      type: String,
+      trim: true,
+      default: 'M',
+    },
+    materialCuadro: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    transmision: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    peso: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    imagen: {
+      type: String,
+      trim: true,
+      default: '',
+    },
   },
   { timestamps: true }
 );

@@ -174,7 +174,9 @@ export default function ClienteDetalle() {
               <span className="pagina-eyebrow">Contacto</span>
               <h2>Datos registrados</h2>
             </div>
-            <div className="detalle-avatar">{iniciales}</div>
+            <div className="detalle-avatar">
+              {cliente.avatar ? <img src={cliente.avatar} alt={`Avatar de ${cliente.nombre}`} /> : iniciales}
+            </div>
           </div>
 
           <ul className="detalle-lista">

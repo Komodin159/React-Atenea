@@ -1,10 +1,11 @@
 import { useContext } from 'react';
-import { Heart, Package } from 'lucide-react';
-import { FavoritosContext } from '../context/FavoritosContext';
+import { Link } from 'react-router-dom';
+import { Package, ShoppingCart } from 'lucide-react';
+import { CarritoContext } from '../context/CarritoContext';
 import './ProductoCard.css';
 
 export default function ProductoCard({ producto }) {
-  const { agregarFavorito } = useContext(FavoritosContext);
+  const { agregarAlCarrito } = useContext(CarritoContext);
   const precio = Number(producto.precio).toLocaleString('es-CO');
   const categoria = producto.categoria || 'Sin categoría';
   const stock = Number(producto.stock ?? 0);
@@ -12,6 +13,7 @@ export default function ProductoCard({ producto }) {
 
   return (
     <article className="producto-card">
+      {producto.imagen && <img className="producto-imagen" src={producto.imagen} alt={producto.nombre} />}
       <div className="producto-card-superior">
         <div className="producto-icono">
           <Package size={20} />
@@ -21,7 +23,7 @@ export default function ProductoCard({ producto }) {
 
       <div className="producto-card-info">
         <h3>{producto.nombre}</h3>
-        <p>{categoria}</p>
+        <p>{producto.marca || 'Atenea Cycling'} · {categoria}</p>
         {producto.descripcion && (
           <p className="producto-desc">{producto.descripcion}</p>
         )}
@@ -36,11 +38,12 @@ export default function ProductoCard({ producto }) {
       <button
         type="button"
         className="producto-favorito"
-        onClick={() => agregarFavorito(producto)}
+        onClick={() => agregarAlCarrito(producto)}
       >
-        <Heart size={16} />
-        Agregar a Favoritos
+        <ShoppingCart size={16} />
+        Añadir a cotización
       </button>
+      <Link className="producto-detalle" to={`/bicicletas/${producto._id}`}>Ver ficha técnica</Link>
     </article>
   );
 }

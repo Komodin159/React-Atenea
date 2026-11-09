@@ -1,20 +1,20 @@
 import './TopNav.css';
 import { useContext } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Heart, Menu } from 'lucide-react';
+import { Menu, ShoppingCart } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
-import { FavoritosContext } from '../context/FavoritosContext';
+import { CarritoContext } from '../context/CarritoContext';
 
 const titulos = {
-  '/': 'Resumen',
-  '/productos': 'Productos',
+  '/': 'Inicio',
+  '/productos': 'Catálogo',
+  '/carrito': 'Mi cotización',
   '/clientes': 'Clientes',
-  '/mis-favoritos': 'Favoritos',
 };
 
 function TopNav({ abrirMenu }) {
   const { usuario } = useContext(AuthContext);
-  const { favoritos } = useContext(FavoritosContext);
+  const { cantidadTotal } = useContext(CarritoContext);
   const { pathname } = useLocation();
 
   const titulo = pathname.startsWith('/clientes/')
@@ -33,16 +33,16 @@ function TopNav({ abrirMenu }) {
           <Menu size={22} />
         </button>
         <div className="topnav-contexto">
-          <span>Panel de control</span>
+          <span>Atenea Cycling · Performance Store</span>
           <strong>{titulo}</strong>
         </div>
       </div>
 
       <div className="topnav-derecha">
-        <Link to="/mis-favoritos" className="favoritos-acceso">
-          <Heart size={18} />
-          <span className="favoritos-texto">Favoritos</span>
-          <span className="favoritos-contador">{favoritos.length}</span>
+        <Link to="/carrito" className="cotizacion-acceso">
+          <ShoppingCart size={18} />
+          <span className="cotizacion-texto">Cotización</span>
+          <span className="cotizacion-contador">{cantidadTotal}</span>
         </Link>
 
         {usuario && (

@@ -1,0 +1,13 @@
+.bicicleta-detalle { display: grid; grid-template-columns: minmax(280px, 1.1fr) minmax(280px, 1fr); gap: 34px; padding: 26px; border: 1px solid var(--slate-200); border-radius: var(--radius-md); background: var(--white); box-shadow: var(--shadow-sm); }
+.bicicleta-detalle > img { width: 100%; min-height: 300px; border-radius: 14px; object-fit: cover; }
+.detalle-precio { margin: 12px 0; color: var(--sky-700); font-size: 1.7rem; font-weight: 900; }
+.ficha-tecnica { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 22px 0; }
+.ficha-tecnica span { padding: 11px; border-radius: 8px; background: var(--slate-50); color: var(--slate-600); font-size: .82rem; }
+.ficha-tecnica strong { display: block; margin-bottom: 3px; color: var(--navy-950); }
+.carrito-lista-tienda { display: flex; flex-direction: column; gap: 12px; }
+.carrito-bici { display: grid; grid-template-columns: 100px 1fr auto auto; align-items: center; gap: 18px; padding: 14px; border: 1px solid var(--slate-200); border-radius: 12px; background: var(--white); }
+.carrito-bici img { width: 100px; height: 76px; border-radius: 8px; object-fit: cover; }.carrito-bici h2 { margin: 4px 0; font-size: 1rem; }.carrito-bici strong { color: var(--sky-700); font-size: .75rem; }.carrito-bici span { color: var(--slate-600); font-weight: 700; }
+.control-cantidad { display: flex; align-items: center; gap: 10px; }.control-cantidad button { display: grid; place-items: center; width: 30px; height: 30px; border: 1px solid var(--slate-200); border-radius: 7px; background: var(--white); color: var(--navy-900); }
+.carrito-eliminar-tienda { display: inline-flex; align-items: center; gap: 5px; border: 0; background: transparent; color: var(--danger); font: inherit; font-size: .8rem; font-weight: 700; }
+.total-cotizacion { display: flex; align-items: center; justify-content: flex-end; gap: 18px; padding: 20px; border-radius: 12px; background: var(--navy-950); color: var(--white); }.total-cotizacion strong { font-size: 1.35rem; }.total-cotizacion .boton-primario { background: var(--sky-500); }
+@media (max-width: 720px) { .bicicleta-detalle { grid-template-columns: 1fr; }.ficha-tecnica { grid-template-columns: 1fr; }.carrito-bici { grid-template-columns: 76px 1fr; }.carrito-bici img { width: 76px; height: 60px; }.control-cantidad, .carrito-eliminar-tienda { grid-column: 2; }.total-cotizacion { align-items: flex-start; flex-direction: column; } }

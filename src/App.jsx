@@ -5,7 +5,8 @@ import Productos from './pages/Productos';
 import NotFound from './pages/NotFound';
 import Clientes from './pages/Clientes';
 import ClienteDetalle from './pages/ClienteDetalle';
-import MisFavoritos from './pages/MisFavoritos';
+import DetalleBicicleta from './pages/DetalleBicicleta';
+import Carrito from './pages/Carrito';
 import Login from './pages/Login';
 import Registro from './pages/Registro';
 import RutaProtegida from './components/RutaProtegida';
@@ -20,9 +21,10 @@ function App() {
         <Route path="/" element={<DashboardLayout />}>
           <Route index element={<PanelGeneral />} />
           <Route path="productos" element={<Productos />} />
+          <Route path="bicicletas/:id" element={<DetalleBicicleta />} />
+          <Route path="carrito" element={<Carrito />} />
           <Route path="clientes" element={<Clientes />} />
           <Route path="clientes/:id" element={<ClienteDetalle />} />
-          <Route path="mis-favoritos" element={<MisFavoritos />} />
         </Route>
       </Route>
 

@@ -4,25 +4,23 @@ import {
   AlertTriangle,
   ArrowRight,
   ArrowUpRight,
-  CalendarDays,
-  Heart,
+  ShoppingCart,
   Package,
   Sparkles,
   Users,
   Wallet,
 } from 'lucide-react';
-import RelojDigital from '../components/RelojDigital';
 import clienteAxios from '../api/clienteAxios';
 import { useAuth } from '../context/AuthContext';
-import { FavoritosContext } from '../context/FavoritosContext';
+import { CarritoContext } from '../context/CarritoContext';
 import './PanelGeneral.css';
 
 const accesos = [
   {
     to: '/productos',
     icono: Package,
-    titulo: 'Productos',
-    descripcion: 'Administra la carta y el inventario.',
+    titulo: 'Catálogo',
+    descripcion: 'Explora bicicletas de alto rendimiento.',
   },
   {
     to: '/clientes',
@@ -31,16 +29,16 @@ const accesos = [
     descripcion: 'Consulta y registra cuentas de clientes.',
   },
   {
-    to: '/mis-favoritos',
-    icono: Heart,
-    titulo: 'Favoritos',
-    descripcion: 'Revisa los productos que guardaste.',
+    to: '/carrito',
+    icono: ShoppingCart,
+    titulo: 'Mi cotización',
+    descripcion: 'Revisa las bicicletas seleccionadas.',
   },
 ];
 
 export default function PanelGeneral() {
   const { usuario, logout } = useAuth();
-  const { favoritos } = useContext(FavoritosContext);
+  const { cantidadTotal } = useContext(CarritoContext);
   const navigate = useNavigate();
   const [resumen, setResumen] = useState(null);
   const [cargando, setCargando] = useState(true);
@@ -79,12 +77,6 @@ export default function PanelGeneral() {
   }, [logout, navigate]);
 
   const primerNombre = usuario?.nombre?.split(' ')[0] || 'bienvenido';
-  const fecha = new Date().toLocaleDateString('es-CO', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-  });
-
   const valorInventario = Number(resumen?.valorInventario || 0).toLocaleString(
     'es-CO',
   );
@@ -99,19 +91,14 @@ export default function PanelGeneral() {
           </span>
           <h1>Hola, {primerNombre}</h1>
           <p>
-            Este es el resumen de Atenea. Revisa las métricas de la carta,
-            administra el inventario y mantén tus clientes bajo control desde un
-            solo lugar.
+            Descubre bicicletas premium de Orbea, Trek, Canyon y Specialized.
+            Explora el catálogo y crea una cotización desde un solo lugar.
           </p>
-          <span className="resumen-fecha">
-            <CalendarDays size={16} />
-            {fecha}
-          </span>
         </div>
 
         <div className="resumen-hero-acciones">
           <Link to="/productos" className="hero-boton hero-boton--claro">
-            Gestionar productos
+            Explorar catálogo
             <ArrowRight size={17} />
           </Link>
           <Link to="/clientes" className="hero-boton hero-boton--fantasma">
@@ -128,14 +115,14 @@ export default function PanelGeneral() {
               <Package size={21} />
             </div>
             <div>
-              <span className="metrica-etiqueta">Productos en carta</span>
+              <span className="metrica-etiqueta">Bicicletas disponibles</span>
               <strong className="metrica-valor">
                 {cargando ? '...' : resumen?.total ?? 0}
               </strong>
             </div>
           </div>
           <Link to="/productos" className="enlace-metrica">
-            Abrir inventario
+            Abrir catálogo
             <ArrowUpRight size={15} />
           </Link>
         </section>
@@ -146,14 +133,14 @@ export default function PanelGeneral() {
               <AlertTriangle size={21} />
             </div>
             <div>
-              <span className="metrica-etiqueta">Stock bajo</span>
+              <span className="metrica-etiqueta">Unidades limitadas</span>
               <strong className="metrica-valor">
                 {cargando ? '...' : resumen?.stockBajo ?? 0}
               </strong>
             </div>
           </div>
           <p className="metrica-detalle">
-            Productos con 5 unidades o menos. Repón antes del próximo servicio.
+            Bicicletas con 5 unidades o menos en el inventario.
           </p>
         </section>
 
@@ -172,23 +159,22 @@ export default function PanelGeneral() {
           <p className="metrica-detalle">Precio por unidad × stock disponible.</p>
         </section>
 
-        <section className="tarjeta-metrica tarjeta-favoritos">
+        <section className="tarjeta-metrica tarjeta-cotizacion">
           <div className="metrica-cabecera">
-            <div className="metrica-icono metrica-icono--favoritos">
-              <Heart size={21} />
+            <div className="metrica-icono metrica-icono--cotizacion">
+              <ShoppingCart size={21} />
             </div>
             <div>
-              <span className="metrica-etiqueta">Favoritos guardados</span>
-              <strong className="metrica-valor">{favoritos.length}</strong>
+              <span className="metrica-etiqueta">En tu cotización</span>
+              <strong className="metrica-valor">{cantidadTotal}</strong>
             </div>
           </div>
-          <Link to="/mis-favoritos" className="enlace-metrica">
-            Abrir lista
+          <Link to="/carrito" className="enlace-metrica">
+            Ver cotización
             <ArrowUpRight size={15} />
           </Link>
         </section>
 
-        <RelojDigital />
       </div>
 
       <section className="resumen-seccion">

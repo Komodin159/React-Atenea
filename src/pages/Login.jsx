@@ -41,7 +41,7 @@ export default function Login() {
         <span className="auth-marca">React Atenea</span>
         <h1>Iniciar sesión</h1>
         <p className="auth-descripcion">
-          Ingresa con tu cuenta para administrar productos y clientes.
+          Ingresa para explorar bicicletas premium y administrar la tienda.
         </p>
 
         <form onSubmit={manejarEnvio} className="auth-form">

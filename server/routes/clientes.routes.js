@@ -22,6 +22,7 @@ function normalizar(datos) {
     tipo: TIPOS_CLIENTE.includes(datos.tipo) ? datos.tipo : 'Persona natural',
     estado: ESTADOS_CLIENTE.includes(datos.estado) ? datos.estado : 'Activo',
     notas: String(datos.notas || '').trim(),
+    avatar: String(datos.avatar || '').trim(),
   };
 }
 

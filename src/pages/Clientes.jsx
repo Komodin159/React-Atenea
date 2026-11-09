@@ -171,7 +171,7 @@ export default function Clientes() {
           <span className="pagina-eyebrow">Relaciones</span>
           <h1>Clientes</h1>
           <p className="pagina-descripcion">
-            Administra la base de clientes de la cafetería: datos de contacto,
+            Administra la base de clientes de la tienda: datos de contacto,
             tipo de cuenta y estado. Cada registro se guarda en MongoDB.
           </p>
         </div>
@@ -372,7 +372,11 @@ export default function Clientes() {
               <article key={cliente._id} className="cliente-card">
                 <div className="cliente-superior">
                   <div className="cliente-identidad">
-                    <div className="cliente-avatar">{iniciales(cliente.nombre)}</div>
+                    <div className="cliente-avatar">
+                      {cliente.avatar ? (
+                        <img src={cliente.avatar} alt={`Avatar de ${cliente.nombre}`} />
+                      ) : iniciales(cliente.nombre)}
+                    </div>
                     <div className="cliente-titulo">
                       <h3>{cliente.nombre}</h3>
                       <span>{cliente.empresa || 'Cliente particular'}</span>
